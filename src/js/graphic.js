@@ -25,9 +25,9 @@ function init() {
 		d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0.json", function(nuts0) {
 			d3.json("assets/data/land.json", function(land) {
 				d3.json("assets/data/capitals.json", function(capitals) {
-					d3.csv('assets/data/gdp_nuts2_16.csv', function(gdp){
+					d3.csv('assets/data/regiondata.csv', function(gdp){
 						gdp.forEach(function(el){
-							el.pps = +el.pps;
+							el.pps = +el.gdppps16;
 						});
 
 						let devscale = d3.scaleThreshold()
