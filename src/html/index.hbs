@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang='en' data-version='{{timestamp}}'>
+
+<head>
+
+	{{> base/meta}}
+
+	<!-- smoosh -->
+	<link rel='stylesheet' href='bundle.css' />
+	<!-- endsmoosh -->
+
+	<!-- boilerplate.css -->
+
+	{{> base/font}}
+
+	<!-- smoosh -->
+	<script src='critical.js'></script>
+	<!-- endsmoosh -->
+
+	{{> base/analytics }}
+
+</head>
+
+<body class='tk-publico'>
+
+	{{> base/header }}
+
+	<main id='content'>
+
+		{{> story/intro }}
+		{{> story/p1 }}
+		{{> story/map1 }}
+		<!-- PUT ALL YOUR HTML HERE-->
+
+	</main>
+
+	{{!--
+	<script src='{{basepath}}assets/scripts/d3.v5.0.0.min.js'></script> --}}
+	<script src='{{basepath}}assets/scripts/d3.v4.12.0+jetpack.min.js'></script>
+	<script src='bundle.js?version={{timestamp}}' async></script>
+	<script src='https://pudding.cool/assets/scripts/pudding-footer.js' async></script>
+</body>
+
+</html>

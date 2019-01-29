@@ -1,0 +1,72 @@
+{
+  "name": "starter",
+  "version": "2.0.0",
+  "description": "Starter template for Pudding stories",
+  "author": "Russell Goldenberg",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "dependencies": {
+    "fontfaceobserver": "^2.1.0",
+    "lodash.debounce": "^4.0.8",
+    "nouislider": "^12.1.0",
+    "promise-polyfill": "^8.1.0",
+    "superagent": "^4.1.0",
+    "topojson": "^3.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "7.2.0",
+    "@babel/preset-env": "7.2.3",
+    "@babel/register": "7.0.0",
+    "archieml": "^0.4.2",
+    "babel-loader": "8.0.5",
+    "browser-sync": "^2.26.3",
+    "d3-dsv": "1.0.10",
+    "del": "^3.0.0",
+    "eslint": "^5.12.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.4.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-clean-css": "^4.0.0",
+    "gulp-combine-mq": "^0.4.0",
+    "gulp-file-include": "^2.0.1",
+    "gulp-hb": "^7.0.1",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-notify": "^3.2.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-rename": "^1.4.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-smoosher": "^0.0.9",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-stylus": "^2.7.0",
+    "gulp-util": "^3.0.7",
+    "prettier": "^1.15.3",
+    "request": "^2.88.0",
+    "require-dir": "^1.2.0",
+    "run-sequence": "^2.2.0",
+    "source-map": "^0.7.3",
+    "webpack": "^4.28.4",
+    "webpack-stream": "^5.2.1"
+  },
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polygraph-cool/starter.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/polygraph-cool/starter/issues"
+  },
+  "homepage": "https://github.com/polygraph-cool/starter#readme"
+}

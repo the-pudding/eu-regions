@@ -1,0 +1,129 @@
+header
+	z-index set-index('overlay')
+	position absolute
+	top 0
+	left 0
+	width 100%
+	background-color $white
+
+	a.logo
+		display block
+		border none
+		max-width 9rem
+		margin 1rem auto
+
+		svg
+			fill $off-black
+			display block
+			width 100%
+	
+header.is-sticky
+	position fixed
+	transform translate3d(0,0,0)
+	background-color $white
+	box-shadow 0 0 7px 1px $gray-light
+	
+	a.logo
+		margin 0 auto
+	
+	.header__toggle
+		position fixed
+		transform translate3d(0,0,0)
+		top 0
+		right 0
+		padding 0.75rem
+		cursor pointer
+		line-height 1
+		z-index set-index(overlay)
+		svg
+			stroke $off-black
+		
+		span
+			&:first-of-type
+				display block
+			&:last-of-type
+				display none
+		
+		&.is-visible span
+			&:first-of-type
+				display none
+			&:last-of-type
+				display block
+
+			svg
+				stroke $off-white
+
+	.header__menu
+		position fixed
+		top 0
+		right 0
+		transform translateX(100%)
+		height 100vh
+		width 100%
+		max-width 30rem
+		padding 1rem 1.5rem
+		background-color $off-black
+		color $off-white
+		z-index set-index(overlay)
+		transition transform 200ms ease-in-out
+		+mq('bp-3')
+			border-left 1px solid $gray-dark
+
+		&.is-visible
+			transform translateX(0)
+
+		a
+			color $off-white
+			border-bottom 1px solid $off-white
+			&:hover
+				color $gray-light
+
+		.menu__links li
+			margin-bottom 0.5rem
+			set-type-size(large)
+			+mq('bp-3')
+				set-type-size(x-large)
+
+		.menu__patreon a
+			font-weight 600
+			color $off-black
+			background-color goldenrod
+			padding 0.25em 0.5em
+			border-radius 4px
+			border none
+			border-bottom none
+			font-size 0.8em
+			text-transform uppercase
+			margin-left 0.5em
+			&:hover
+				background-color rgba(goldenrod, 0.75)
+				color $off-black
+
+// dark color version
+header.is-sticky.is-dark
+	background-color $off-black
+	box-shadow 0 0 7px 1px $gray-dark
+
+	svg
+		fill $off-white
+
+	.header__menu
+		background-color $white
+		color $off-black
+		+mq('bp-3')
+			border-left 1px solid $gray-light
+
+	a
+		color $off-black
+		border-bottom 1px solid $off-black
+		&:hover
+			color $gray-dark
+
+	.header__toggle
+		svg
+			stroke $off-white
+		
+		&.is-visible span
+			svg
+				stroke $off-black
+				
