@@ -6,7 +6,6 @@ import scrollama from "scrollama";
 import { legendColor } from "d3-svg-legend";
 import { toCircle, fromCircle } from "flubber";
 
-
 function resize() {}
 
 function init() {
@@ -22,7 +21,6 @@ function init() {
 	let path = d3.geoPath()
 		.projection(projection);
 	
-	//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2.json", function(nuts2) {
 	d3.json("assets/data/NUTS2_20M_2013_topo.json", function(nuts2) {
 		d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0.json", function(nuts0) {
 			d3.json("assets/data/land.json", function(land) {
@@ -45,6 +43,9 @@ function init() {
 						})
 						.onStepEnter(handleStepEnter);
 
+						//TODO: add functions to steps based on data attributes, not on indices
+						//TODO: interrupt animations when scroll to new step?
+						//TODO: update legend labels
 						function handleStepEnter(step){
 							d3.selectAll(".step").classed("is-active", false);
 							d3.select(step.element).classed("is-active", true);
@@ -179,7 +180,7 @@ function init() {
 						let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
 						//TODO: remove from the topojson
 						geojsonNUTS2.features = geojsonNUTS2.features.filter(function(region){
-							return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME";
+							return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME" && region.properties.CNTR_CODE != "LI";
 						})
 
 						const margin = {"top": 40, "left": 40, "bottom": 20, "right": 20};
@@ -192,7 +193,7 @@ function init() {
 							.domain([20, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps16)])
 							.range([margin.left, width - margin.right])
 
-						//TODO: format numbers strings as numbers
+						//TODO: format number strings as numbers
 						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.NUTS_RG_20M_2013_4326);
 
 						const mapPadding = 10;
@@ -209,7 +210,7 @@ function init() {
 							.attr("class", "land")
 							.attr("d", path);
 
-						let regions  = mapOne.selectAll("path.region")
+						let regions = mapOne.selectAll("path.region")
 							.data(geojsonNUTS2.features)
 							.enter().append("path")
 							.attr("class", "region")
@@ -217,6 +218,7 @@ function init() {
 							.attr("id", (d) => d.id)
 							.style("fill", (d) => devscale(+d.properties.gdppps16));
 
+						//TODO: add data to topojson, animate them to the dot plot too
 						let countries = mapOne.selectAll("path.country")
 							.data(geojsonNUTS0.features)
 							.enter().append("path")
@@ -230,7 +232,8 @@ function init() {
 								if(regdata.length == 0){ return "#f1f1f1"; }
 								else{return devscale(regdata[0].gdppps16);}
 							});
-
+						
+						//TODO: add data to capitals, animate them to
 						let caps = mapOne.selectAll("circle.capital")
 							.data(capitals.features)
 							.enter().append("path")
@@ -251,7 +254,10 @@ function init() {
 
 						mapOne.select(".chorolegend")
 							.call(legend);
-
+						let countrycounts = [7, 7, 6, 4, 4];
+						histogrammifyLegend(countrycounts, devscale.range());
+						
+						/* Helper functions */
 						function histogrammifyLegend(histovalues, colors){
 							const legendhistowidth = 100;
 							let histoScale = d3.scaleLinear()
@@ -264,9 +270,6 @@ function init() {
 								.attr("width", (d) => histoScale(d))
 								.attr("transform", (d) => `translate(${-histoScale(d) + 48},0)`);
 						}
-
-						let countrycounts = [7, 7, 6, 4, 4];
-						histogrammifyLegend(countrycounts, devscale.range());
 
 						function getRegionFrequencies(property, thresholds){
 							let histo = d3.histogram()
