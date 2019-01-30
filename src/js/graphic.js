@@ -1,13 +1,16 @@
 /* global d3 */
 import * as topojson from 'topojson';
 import {select} from '../js/utils/dom.js';
+import 'intersection-observer';
+import scrollama from 'scrollama';
 
 function resize() {}
 
 function init() {
-	let width = select(".map1").clientWidth;
-	let ratio = 0.7;
-	let height = width*ratio;
+	let width = select(".mapcontainer").clientWidth;
+	//let ratio = 0.7;
+	//let height = width*ratio;
+	let height = select(".mapcontainer").clientHeight;
 	let mapOne = d3.select("svg#mapone")
 		.attr("width", width)
 		.attr("height", height);
@@ -21,7 +24,8 @@ function init() {
 	let path = d3.geoPath()
 		.projection(projection);
 	
-	d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2.json", function(nuts2) {
+	//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2.json", function(nuts2) {
+	d3.json("assets/data/NUTS2_20M_2013_topo.json", function(nuts2) {
 		d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0.json", function(nuts0) {
 			d3.json("assets/data/land.json", function(land) {
 				d3.json("assets/data/capitals.json", function(capitals) {
@@ -30,14 +34,33 @@ function init() {
 							el.pps = +el.gdppps16;
 						});
 
+						const scroller = scrollama();
+						scroller.setup({
+							step: ".step"
+						})
+						.onStepEnter(updateMap);
+
+						function updateMap(step){
+							if(step.index == 1 && step.direction == "down"){
+								d3.selectAll(".country")
+									.style("fill-opacity", 0);
+							}
+							if(step.index == 0 && step.direction == "up"){
+								d3.selectAll(".country")
+									.style("fill-opacity", 1);
+							}
+						}
+
 						let devscale = d3.scaleThreshold()
 							.domain([75, 90, 110, 125])
 							//.range(['#e66101','#fdb863','#f7f7f7','#b2abd2','#5e3c99']);
-							//.range(["#2686A0","#94B9A7","#EDEAC2","#C6AA74","#A36B2B"].reverse());
-							//.range(["#C75DAA","#DEA9CC","#CCCCCC","#7DC5C7","#009B9F"]);
-							.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())
+							.range(["#2686A0","#94B9A7","#EDEAC2","#C6AA74","#A36B2B"].reverse());
+							//.range(["#C75DAA","#DEA9CC","#CCCCCC","#7DC5C7","#009B9F"]);//PurpleGreen
+							//.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())
 
-						let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.NUTS_RG_20M_2013_4326);
+						//let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.NUTS_RG_20M_2013_4326);
+						let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
+						//TODO: format numbers strings as numbers
 						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.NUTS_RG_20M_2013_4326);
 
 						projection.fitExtent([[0,0], [width, height]], geojsonNUTS2);
@@ -60,6 +83,14 @@ function init() {
 							.attr("class", "region")
 							.attr("d", path)
 							.attr("id", (d) => d.id)
+							.style("fill", (d) => devscale(+d.properties.gdppps16));
+
+						mapOne.selectAll("path.country")
+							.data(geojsonNUTS0.features)
+							.enter().append("path")
+							.attr("class", "country")
+							.attr("d", path)
+							.attr("id", (d) => d.id)
 							.style("fill", function(d){
 								let regiondata = gdp.filter(function(el){
 									return el.geo == d.id;
@@ -68,19 +99,11 @@ function init() {
 								else{return devscale(regiondata[0].pps);}
 							});
 
-						mapOne.selectAll("path.country")
-							.data(geojsonNUTS0.features)
-							.enter().append("path")
-							.attr("class", "country")
-							.attr("d", path)
-							.attr("id", (d) => d.id)
-							.style("fill", "none");
-
 						mapOne.selectAll("circle.capital")
 							.data(capitals.features)
 							.enter().append("path")
 							.attr("class", "capital")
-							.attr("d", path.pointRadius(4))
+							.attr("d", path.pointRadius(2))
 							.attr("id", (d) => d.name);
 				
 					})

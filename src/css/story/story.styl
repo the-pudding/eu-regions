@@ -1,12 +1,45 @@
-.story
+@import "../utils/helpers"
+
+.filler
 	margin 0 auto
 	padding 4rem 1rem 1.5rem 1rem
 	max-width 60rem
 
+#scrolly-side .scrolly
+	display flex
+
+	& > *
+		flex 1
+
+	article
+		padding-right 1rem
+		max-width 30rem
+
+		.step
+			min-height 40vh
+			margin-bottom 1rem
+			transition background-color 250ms ease-in-out
+			&:last-of-type
+				margin-bottom 0
+			&.is-active
+					background-color $secondary
+			p
+				margin 0
+				padding 1rem
+
+	figure.sticky
+		position sticky
+		width 100%
+		height 100vhs
+		margin 0
+		top 0
+		left 0
+
 /* MAP */
-.mapone {
-	width: 100%
-}
+.mapcontainer
+	position sticky
+	top 0
+	height 100vh
 
 .graticule {
   fill: none;
@@ -26,11 +59,13 @@
 .country {
 	stroke: #ffffff;
 	stroke-width: 1px;
+	transition: fill-opacity 1.5s;
 }
 
 .capital {
 	stroke: #333333;
-	stroke-width: 1px;
-	fill: none;
+	stroke-width: 0px;
+	fill: #333333;
 	fill-opacity: 1;
+	filter: drop-shadow(3px 3px 3px red);
 }
