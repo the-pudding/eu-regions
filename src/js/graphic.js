@@ -49,41 +49,59 @@ function init() {
 							if(step.index == 2 && step.direction == "down"){
 								d3.selectAll(".country")
 									.style("fill-opacity", 0);
+
+								histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 							}
 							if(step.index == 1 && step.direction == "up"){
 								d3.selectAll(".country")
 									.style("fill-opacity", 1);
+								
+								let countrycounts = [7, 7, 6, 4, 4];
+								histogrammifyLegend(countrycounts, devscale.range())
 							}
 
 							if(step.index == 5 && step.direction == "down"){
 								regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
-								legend.scale(absfundScale)
-									.labels(absfundScale.domain());
-								mapOne.call(legend);
+								
+								histogrammifyLegend(getRegionFrequencies("totalpayments0716", absfundScale.domain()), absfundScale.range());
 							}
 							if(step.index == 4 && step.direction == "up"){
 								regions.style("fill", (d) => devscale(d.properties.gdppps16))
+
+								histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 							}
 							
 							if(step.index == 6 && step.direction == "down"){
 								regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
+
+								histogrammifyLegend(getRegionFrequencies("totalpercapita0716", percapitafundScale.domain()), absfundScale.range());
 							}
 							if(step.index == 5 && step.direction == "up"){
 								regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
+
+								histogrammifyLegend(getRegionFrequencies("totalpayments0716", absfundScale.domain()), absfundScale.range());
 							}
 
 							if(step.index == 7 && step.direction == "down"){
 								regions.style("fill", (d) => fundpercgdpScale(d.properties.fundpercgdp15))
+
+								histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), absfundScale.range());
 							}
 							if(step.index == 6 && step.direction == "up"){
 								regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
+								
+								histogrammifyLegend(getRegionFrequencies("totalpercapita0716", percapitafundScale.domain()), absfundScale.range());
 							}
 
 							if(step.index == 8 && step.direction == "down"){
 								regions.style("fill", (d) => devscale(d.properties.gdppps16))
+								
+								histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 							}
 							if(step.index == 7 && step.direction == "up"){
 								regions.style("fill", (d) => fundpercgdpScale(d.properties.fundpercgdp15))
+
+								histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), absfundScale.range());
 							}
 
 						}
@@ -96,7 +114,7 @@ function init() {
 							//.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())
 
 						const absfundScale = d3.scaleThreshold()
-							.domain([100000000, 500000000, 1000000000, 5000000000])
+							.domain([200000000, 400000000, 1000000000, 5000000000])
 							.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
 
 						const percapitafundScale = d3.scaleThreshold()
@@ -112,7 +130,7 @@ function init() {
 						geojsonNUTS2.features = geojsonNUTS2.features.filter(function(region){
 							return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME";
 						})
-						console.log(geojsonNUTS2);
+
 						//TODO: format numbers strings as numbers
 						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.NUTS_RG_20M_2013_4326);
 
@@ -163,7 +181,7 @@ function init() {
 						//Legend
 						mapOne.append("g")
 						  .attr("class", "chorolegend tk-atlas")
-						  .attr("transform", `translate(${width - 130},20)`);
+						  .attr("transform", `translate(${width - 150},20)`);
 
 						let legend = legendColor()
 							.shapeWidth(50)
@@ -173,6 +191,32 @@ function init() {
 
 						mapOne.select(".chorolegend")
 							.call(legend);
+
+						function histogrammifyLegend(histovalues, colors){
+							const legendhistowidth = 100;
+							let histoScale = d3.scaleLinear()
+								.domain([0, d3.max(histovalues)])
+								.range([0, legendhistowidth])
+						
+							d3.selectAll(".cell rect").data(histovalues)
+								.transition().duration(1000)
+								.style("fill", (d, i) => colors[i])
+								.attr("width", (d) => histoScale(d))
+								.attr("transform", (d) => `translate(${-histoScale(d) + 48},0)`);
+						}
+
+						let countrycounts = [7, 7, 6, 4, 4];
+						histogrammifyLegend(countrycounts, devscale.range());
+
+						function getRegionFrequencies(property, thresholds){
+							let histo = d3.histogram()
+								.value((d) => +d.properties[property])
+								.thresholds(thresholds);
+							return histo(geojsonNUTS2.features).map((bin) => bin.length);
+						}
+
+						
+
 				
 					})
 				})
