@@ -30,6 +30,7 @@ function init() {
 			d3.json("assets/data/land.json", function(land) {
 				d3.json("assets/data/capitals.json", function(capitals) {
 					d3.csv('assets/data/regiondata.csv', function(gdp){
+						
 						gdp.forEach(function(el){
 							el.pps = +el.gdppps16;
 						});
@@ -60,10 +61,16 @@ function init() {
 
 						//let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.NUTS_RG_20M_2013_4326);
 						let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
+						//TODO: remove from the topojson
+						geojsonNUTS2.features = geojsonNUTS2.features.filter(function(region){
+							return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME";
+						})
+						console.log(geojsonNUTS2);
 						//TODO: format numbers strings as numbers
 						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.NUTS_RG_20M_2013_4326);
 
-						projection.fitExtent([[0,0], [width, height]], geojsonNUTS2);
+						const mapPadding = 10;
+						projection.fitExtent([[mapPadding,mapPadding], [width - mapPadding, height - mapPadding]], geojsonNUTS2);
 
 						mapOne
 							.append("path")
