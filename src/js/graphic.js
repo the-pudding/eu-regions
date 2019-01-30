@@ -3,6 +3,7 @@ import * as topojson from 'topojson';
 import {select} from '../js/utils/dom.js';
 import 'intersection-observer';
 import scrollama from 'scrollama';
+import { legendColor } from 'd3-svg-legend';
 
 function resize() {}
 
@@ -56,6 +57,9 @@ function init() {
 
 							if(step.index == 5 && step.direction == "down"){
 								regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
+								legend.scale(absfundScale)
+									.labels(absfundScale.domain());
+								mapOne.call(legend);
 							}
 							if(step.index == 4 && step.direction == "up"){
 								regions.style("fill", (d) => devscale(d.properties.gdppps16))
@@ -155,6 +159,20 @@ function init() {
 							.attr("class", "capital")
 							.attr("d", path.pointRadius(2))
 							.attr("id", (d) => d.name);
+
+						//Legend
+						mapOne.append("g")
+						  .attr("class", "chorolegend tk-atlas")
+						  .attr("transform", `translate(${width - 130},20)`);
+
+						let legend = legendColor()
+							.shapeWidth(50)
+							.labelFormat(d3.format(".2f"))
+							.labels(["Less developed", "In development", "Average", "Developed", "Very developed"])
+							.scale(devscale);
+
+						mapOne.select(".chorolegend")
+							.call(legend);
 				
 					})
 				})
