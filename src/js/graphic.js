@@ -4,6 +4,7 @@ import {select} from '../js/utils/dom.js';
 import 'intersection-observer';
 import scrollama from 'scrollama';
 import { legendColor } from 'd3-svg-legend';
+import { toCircle } from "flubber"
 
 function resize() {}
 
@@ -104,6 +105,18 @@ function init() {
 								histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), absfundScale.range());
 							}
 
+							if(step.index == 10 && step.direction == "down"){
+								regions
+									.transition().duration(4000)
+									.delay((d, i) => i*30)
+									.attrTween("d", function(d){
+										return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 10);
+									});
+							}
+							if(step.index == 9 && step.direction == "up"){
+								
+							}
+
 						}
 
 						const devscale = d3.scaleThreshold()
@@ -130,6 +143,14 @@ function init() {
 						geojsonNUTS2.features = geojsonNUTS2.features.filter(function(region){
 							return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME";
 						})
+
+						let countries = geojsonNUTS2.features.map((region) => region.properties.CNTR_CODE);
+						const countryScale = d3.scalePoint()
+							.domain(countries)
+							.range([20, height - 20])
+						const devLinearScale = d3.scaleLinear()
+							.domain([20, d3.max(geojsonNUTS2.features, (d) => d.properties.gdppps16)])
+							.range([20, width - 20])
 
 						//TODO: format numbers strings as numbers
 						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.NUTS_RG_20M_2013_4326);

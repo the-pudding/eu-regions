@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "d3-svg-legend": "^2.25.6",
+    "flubber": "^0.4.2",
     "fontfaceobserver": "^2.1.0",
     "intersection-observer": "^0.5.1",
     "lodash.debounce": "^4.0.8",
