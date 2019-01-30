@@ -1,28 +1,24 @@
 /* global d3 */
-import * as topojson from 'topojson';
-import {select} from '../js/utils/dom.js';
-import 'intersection-observer';
-import scrollama from 'scrollama';
-import { legendColor } from 'd3-svg-legend';
-import { toCircle } from "flubber"
+import * as topojson from "topojson";
+import {select} from "../js/utils/dom.js";
+import "intersection-observer";
+import scrollama from "scrollama";
+import { legendColor } from "d3-svg-legend";
+import { toCircle, fromCircle } from "flubber";
+
 
 function resize() {}
 
 function init() {
 	let width = select(".mapcontainer").clientWidth;
-	//let ratio = 0.7;
-	//let height = width*ratio;
 	let height = select(".mapcontainer").clientHeight;
 	let mapOne = d3.select("svg#mapone")
 		.attr("width", width)
 		.attr("height", height);
 
-	let	center = [5, 75];
-	let scale = 1000;
-	//let projection = d3.geoMercator()
-	let projection = d3.geoAzimuthalEqualArea();
-		//.scale(scale)
-		//.translate([300, 0]).center(center);
+	let projection = d3.geoAzimuthalEqualArea()
+		.rotate([-10,-52,0]);
+
 	let path = d3.geoPath()
 		.projection(projection);
 	
@@ -31,12 +27,18 @@ function init() {
 		d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0.json", function(nuts0) {
 			d3.json("assets/data/land.json", function(land) {
 				d3.json("assets/data/capitals.json", function(capitals) {
-					d3.csv('assets/data/regiondata.csv', function(gdp){
+					d3.csv('assets/data/regiondata.csv', function(regiondata){
+
+						regiondata.forEach(function(el){
+							el.gdppps16 = +el.gdppps16;
+						});
 						
-						gdp.forEach(function(el){
-							el.pps = +el.gdppps16;
+						let countrydata = regiondata.filter((d) => d.type == "country");
+						countrydata.sort(function(x, y){
+							return d3.descending(x.gdppps16, y.gdppps16);
 						});
 
+						/* Scrollama */
 						const scroller = scrollama();
 						scroller.setup({
 							step: ".step"
@@ -48,14 +50,12 @@ function init() {
 							d3.select(step.element).classed("is-active", true);
 
 							if(step.index == 2 && step.direction == "down"){
-								d3.selectAll(".country")
-									.style("fill-opacity", 0);
+								countries.style("fill-opacity", 0);
 
 								histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 							}
 							if(step.index == 1 && step.direction == "up"){
-								d3.selectAll(".country")
-									.style("fill-opacity", 1);
+								countries.style("fill-opacity", 1);
 								
 								let countrycounts = [7, 7, 6, 4, 4];
 								histogrammifyLegend(countrycounts, devscale.range())
@@ -106,17 +106,55 @@ function init() {
 							}
 
 							if(step.index == 10 && step.direction == "down"){
+								countries.style("opacity", 0);
+								chorolegend.style("opacity", 0);
+								landsilhouette.style("opacity", 0.3);
+								caps.style("opacity", 0);
+								graticule.style("opacity", 0);
 								regions
-									.transition().duration(4000)
-									.delay((d, i) => i*30)
+									.transition().duration(1000)
+									.delay((d, i) => i*20)
 									.attrTween("d", function(d){
-										return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 10);
+										return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
 									});
+
+								let yAxis = d3.axisLeft(countryScale)
+									.tickSize(-width);
+
+								mapOne.append("g")
+									.attr("transform", "translate(30, 0)")
+									.attr("class", "y-axis")
+									.call(yAxis).lower();
 							}
 							if(step.index == 9 && step.direction == "up"){
-								
+								countries.style("opacity", 1)
+									.style("fill-opacity", 0);
+								chorolegend.style("opacity", 1);
+								landsilhouette.style("opacity", 1);
+								caps.style("opacity", 1);
+								graticule.style("opacity", 1);
+								d3.select(".y-axis").style("opacity", 0);
+								regions
+									.transition().duration(2000)
+									.delay((d, i) => i*20)
+									.attrTween("d", function(d){
+										return fromCircle(devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6, path(d.geometry));
+									});							
 							}
-
+							if(step.index == 11 && step.direction == "down"){
+								devLinearScale.domain([margin.left, 200])
+								regions.transition().duration(1000)
+								.attrTween("d", function(d){
+									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
+								});
+							}
+							if(step.index == 10 && step.direction == "up"){
+								devLinearScale.domain([margin.left, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps16)]);
+								regions.transition().duration(1000)
+								.attrTween("d", function(d){
+									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
+								});
+							}
 						}
 
 						const devscale = d3.scaleThreshold()
@@ -144,13 +182,15 @@ function init() {
 							return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME";
 						})
 
-						let countries = geojsonNUTS2.features.map((region) => region.properties.CNTR_CODE);
+						const margin = {"top": 40, "left": 40, "bottom": 20, "right": 20};
+
+						let countrycodes = countrydata.map((country) => country.geo);
 						const countryScale = d3.scalePoint()
-							.domain(countries)
-							.range([20, height - 20])
+							.domain(countrycodes)
+							.range([margin.top, height - margin.bottom])
 						const devLinearScale = d3.scaleLinear()
-							.domain([20, d3.max(geojsonNUTS2.features, (d) => d.properties.gdppps16)])
-							.range([20, width - 20])
+							.domain([20, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps16)])
+							.range([margin.left, width - margin.right])
 
 						//TODO: format numbers strings as numbers
 						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.NUTS_RG_20M_2013_4326);
@@ -158,13 +198,12 @@ function init() {
 						const mapPadding = 10;
 						projection.fitExtent([[mapPadding,mapPadding], [width - mapPadding, height - mapPadding]], geojsonNUTS2);
 
-						mapOne
-							.append("path")
+						let graticule  = mapOne.append("path")
 							.datum(d3.geoGraticule())
 							.attr("d", path)
 							.attr("class", "graticule");
 
-						mapOne.selectAll("path.land")
+						let landsilhouette = mapOne.selectAll("path.land")
 							.data(land.features)
 							.enter().append("path")
 							.attr("class", "land")
@@ -178,21 +217,21 @@ function init() {
 							.attr("id", (d) => d.id)
 							.style("fill", (d) => devscale(+d.properties.gdppps16));
 
-						mapOne.selectAll("path.country")
+						let countries = mapOne.selectAll("path.country")
 							.data(geojsonNUTS0.features)
 							.enter().append("path")
 							.attr("class", "country")
 							.attr("d", path)
 							.attr("id", (d) => d.id)
 							.style("fill", function(d){
-								let regiondata = gdp.filter(function(el){
+								let regdata = regiondata.filter(function(el){
 									return el.geo == d.id;
 								});
-								if(regiondata.length == 0){ return "#f1f1f1"; }
-								else{return devscale(regiondata[0].pps);}
+								if(regdata.length == 0){ return "#f1f1f1"; }
+								else{return devscale(regdata[0].gdppps16);}
 							});
 
-						mapOne.selectAll("circle.capital")
+						let caps = mapOne.selectAll("circle.capital")
 							.data(capitals.features)
 							.enter().append("path")
 							.attr("class", "capital")
@@ -200,7 +239,7 @@ function init() {
 							.attr("id", (d) => d.name);
 
 						//Legend
-						mapOne.append("g")
+						let chorolegend = mapOne.append("g")
 						  .attr("class", "chorolegend tk-atlas")
 						  .attr("transform", `translate(${width - 150},20)`);
 
@@ -235,16 +274,12 @@ function init() {
 								.thresholds(thresholds);
 							return histo(geojsonNUTS2.features).map((bin) => bin.length);
 						}
-
-						
-
 				
 					})
 				})
 			})
 		})
 	});
-
 }
 
 export default { init, resize };
