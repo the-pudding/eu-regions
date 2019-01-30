@@ -39,27 +39,70 @@ function init() {
 						scroller.setup({
 							step: ".step"
 						})
-						.onStepEnter(updateMap);
+						.onStepEnter(handleStepEnter);
 
-						function updateMap(step){
-							if(step.index == 1 && step.direction == "down"){
+						function handleStepEnter(step){
+							d3.selectAll(".step").classed("is-active", false);
+							d3.select(step.element).classed("is-active", true);
+
+							if(step.index == 2 && step.direction == "down"){
 								d3.selectAll(".country")
 									.style("fill-opacity", 0);
 							}
-							if(step.index == 0 && step.direction == "up"){
+							if(step.index == 1 && step.direction == "up"){
 								d3.selectAll(".country")
 									.style("fill-opacity", 1);
 							}
+
+							if(step.index == 5 && step.direction == "down"){
+								regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
+							}
+							if(step.index == 4 && step.direction == "up"){
+								regions.style("fill", (d) => devscale(d.properties.gdppps16))
+							}
+							
+							if(step.index == 6 && step.direction == "down"){
+								regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
+							}
+							if(step.index == 5 && step.direction == "up"){
+								regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
+							}
+
+							if(step.index == 7 && step.direction == "down"){
+								regions.style("fill", (d) => fundpercgdpScale(d.properties.fundpercgdp15))
+							}
+							if(step.index == 6 && step.direction == "up"){
+								regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
+							}
+
+							if(step.index == 8 && step.direction == "down"){
+								regions.style("fill", (d) => devscale(d.properties.gdppps16))
+							}
+							if(step.index == 7 && step.direction == "up"){
+								regions.style("fill", (d) => fundpercgdpScale(d.properties.fundpercgdp15))
+							}
+
 						}
 
-						let devscale = d3.scaleThreshold()
+						const devscale = d3.scaleThreshold()
 							.domain([75, 90, 110, 125])
 							//.range(['#e66101','#fdb863','#f7f7f7','#b2abd2','#5e3c99']);
 							.range(["#2686A0","#94B9A7","#EDEAC2","#C6AA74","#A36B2B"].reverse());
 							//.range(["#C75DAA","#DEA9CC","#CCCCCC","#7DC5C7","#009B9F"]);//PurpleGreen
 							//.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())
 
-						//let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.NUTS_RG_20M_2013_4326);
+						const absfundScale = d3.scaleThreshold()
+							.domain([100000000, 500000000, 1000000000, 5000000000])
+							.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+
+						const percapitafundScale = d3.scaleThreshold()
+							.domain([25, 50, 100, 200])
+							.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+
+						const fundpercgdpScale = d3.scaleThreshold()
+							.domain([1, 2, 3, 4])
+							.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+
 						let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
 						//TODO: remove from the topojson
 						geojsonNUTS2.features = geojsonNUTS2.features.filter(function(region){
@@ -84,7 +127,7 @@ function init() {
 							.attr("class", "land")
 							.attr("d", path);
 
-						mapOne.selectAll("path.region")
+						let regions  = mapOne.selectAll("path.region")
 							.data(geojsonNUTS2.features)
 							.enter().append("path")
 							.attr("class", "region")

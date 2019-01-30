@@ -1,10 +1,13 @@
 @import "../utils/helpers"
 
+secondary = #f1f1f1
+
 .filler
 	margin 0 auto
 	padding 4rem 1rem 1.5rem 1rem
 	max-width 60rem
 
+/* STICKY SCROLL */
 #scrolly-side .scrolly
 	display flex
 
@@ -12,17 +15,23 @@
 		flex 1
 
 	article
+		display flex
+		flex-direction column
+		align-items center
+		justify-content center
+
 		padding-right 1rem
 		max-width 30rem
 
 		.step
+			align-self center
 			min-height 40vh
 			margin-bottom 1rem
-			transition background-color 250ms ease-in-out
+			transition background-color 500ms ease-in-out
 			&:last-of-type
 				margin-bottom 0
 			&.is-active
-					background-color $secondary
+					background-color secondary
 			p
 				margin 0
 				padding 1rem
@@ -54,6 +63,7 @@
 .region {
 	stroke: #ffffff;
 	stroke-width: 0.5px;
+	transition fill 1000ms ease-in-out
 }
 
 .country {
