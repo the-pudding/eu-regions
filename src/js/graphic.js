@@ -414,6 +414,13 @@ function init() {
 							});
 						
 						//Region highlighting
+						function getRegionsByThreshold(th){
+							return geojsonNUTS2.features.filter(function(region){
+								//TODO: filter by threshold intervals
+								return region.properties.gdppps16 < th;
+							}).map((region) => region.properties.NUTS_ID);
+						}
+
 						function highlightRegion(regioncode, ...moreRegions){
 							d3.selectAll(`.region:not(#${regioncode})`)
 								.style("opacity", 0.1);
@@ -439,7 +446,16 @@ function init() {
 								highlightRegion(regionCode);
 							}).on("mouseout", function(){
 								dehighlightRegions();
-							});			
+							});
+						//TODO: make it work with arrays of region id's
+						/*d3.selectAll(".textlegend")
+							.on("mouseover", function(){
+								let threshold = d3.select(this).attr("data-threshold");
+								let regionsToHighlight = getRegionsByThreshold(threshold);
+								highlightRegion(regionsToHighlight.toString());
+							}).on("mouseout", function(){
+								dehighlightRegions();
+							});*/		
 					})
 				})
 			})

@@ -1,6 +1,11 @@
 @import "../utils/helpers"
 
 secondary = #f1f1f1
+min75col = #BA65A6
+min90col = #D6ACCA
+min110col = #DEE2EE
+min125col = #8DC3C6
+min600col = #44999D
 
 .filler
 	margin 0 auto
@@ -88,8 +93,7 @@ secondary = #f1f1f1
 .y-axis .tick line
 	stroke #eeeeee
 
-.highlight
-	background-color #dddddd
+.highlight, .textlegend
 	border-radius 4px
 	padding-right 3px
 	padding-left 3px
@@ -97,3 +101,24 @@ secondary = #f1f1f1
 	padding-bottom 2px
 	color #000000
 	cursor pointer
+
+.highlight
+	background-color #dddddd
+
+.textlegend-75
+	background-color min75col
+	color #ffffff
+
+.textlegend-90
+	background-color min90col
+	color #ffffff
+
+.textlegend-110
+	background-color min110col
+
+.textlegend-125
+	background-color min125col
+
+.textlegend-600
+	background-color min600col
+	color #ffffff
