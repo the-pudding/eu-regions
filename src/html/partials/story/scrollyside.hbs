@@ -4,7 +4,13 @@
 
     <!--  sticky graphic   -->
 	<figure class="mapcontainer sticky">
-		<svg id="mapone"></svg>
+		<svg id="mapone">
+        <defs>
+          <filter id="shadow">
+            <feDropShadow dx="2" dy="2" stdDeviation="3"/>
+          </filter>
+        </defs>
+    </svg>
   	</figure>
     
     <!--  step text   -->
@@ -25,7 +31,7 @@
           <p>{{doc.p5}}</p>
         </div>
         <div class='step'>
-          <p>{{doc.p6}}</p>
+          {{> story/absolutefunding }}
         </div>
         <div class='step'>
           <p>{{doc.p7}}</p>
@@ -46,10 +52,22 @@
           <p>{{doc.p12}}</p>
         </div>
         <div class='step'>
-          <p>{{doc.p12}}</p>
+          <p>{{doc.p13}}</p>
         </div>
         <div class='step'>
-          <p>{{doc.p12}}</p>
+          <p>{{doc.p14}}</p>
+        </div>
+        <div class='step'>
+          <p>{{doc.p15}}</p>
+        </div>
+        <div class='step'>
+          <p>{{doc.p16}}</p>
+        </div>
+        <div class='step'>
+          <p>{{doc.p17}}</p>
+        </div>
+        <div class='step'>
+          <p>{{doc.p18}}</p>
         </div>
 	  </article>
     

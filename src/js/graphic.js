@@ -107,7 +107,7 @@ function init() {
 								histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), absfundScale.range());
 							}
 
-							if(step.index == 10 && step.direction == "down"){
+							if(step.index == 9 && step.direction == "down"){
 								countries.style("opacity", 0);
 								chorolegend.style("opacity", 0);
 								landsilhouette.style("opacity", 0.3);
@@ -128,7 +128,7 @@ function init() {
 									.attr("class", "y-axis")
 									.call(yAxis).lower();
 							}
-							if(step.index == 9 && step.direction == "up"){
+							if(step.index == 8 && step.direction == "up"){
 								countries.style("opacity", 1)
 									.style("fill-opacity", 0);
 								chorolegend.style("opacity", 1);
@@ -143,19 +143,91 @@ function init() {
 										return fromCircle(devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6, path(d.geometry));
 									});							
 							}
+							
+							if(step.index == 10 && step.direction == "down"){
+								let average = mapOne.append("g")
+									.attr("id", "average")
+									.attr("transform", `translate(${devLinearScale(100)}, 0)`);
+								average.append("line")
+									.attr("x1", 0)
+									.attr("x2", 0)
+									.attr("y1", margin.top)
+									.attr("y2", height - margin.bottom)
+									.style("stroke-width", 2)
+									.style("stroke", "#000000");
+								average.append('text')
+									.attr("x", 0)
+									.attr("y", margin.top-4)
+									.text(100)
+									.style("text-anchor", "middle")
+									.style("fill", "#000000");
+
+							}
+
 							if(step.index == 11 && step.direction == "down"){
-								devLinearScale.domain([margin.left, 200])
-								regions.transition().duration(1000)
-								.attrTween("d", function(d){
-									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
-								});
+								highlightRegion("UKI3")
 							}
 							if(step.index == 10 && step.direction == "up"){
+								dehighlightRegion("UKI3")
+							}
+
+							if(step.index == 12 && step.direction == "down"){
+								dehighlightRegion("uKI3");
+								devLinearScale.domain([20, 200])
+								regions.transition().duration(1000)
+									.attrTween("d", function(d){
+									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
+									});
+									d3.select("#average")
+										.transition().duration(1000)
+										.attr("transform", `translate(${devLinearScale(100)}, 0)`);
+							}
+							if(step.index == 11 && step.direction == "up"){
 								devLinearScale.domain([margin.left, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps16)]);
 								regions.transition().duration(1000)
 								.attrTween("d", function(d){
 									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
 								});
+							}
+							
+							//Add lines for thresholds
+							if(step.index == 13 && step.direction == "down"){
+								let threshold75 = mapOne.append("g")
+									.attr("id", "average")
+									.attr("transform", `translate(${devLinearScale(75)}, 0)`);
+								threshold75.append('line')
+									.attr("x1", 0)
+									.attr("x2", 0)
+									.attr("y1", margin.top)
+									.attr("y2", height - margin.bottom)
+									.style("stroke-width", 2)
+									.style("stroke", devscale(74));
+								threshold75.append('text')
+									.attr("x", 0)
+									.attr("y", margin.top-4)
+									.text(75)
+									.style("text-anchor", "middle")
+									.style("fill", devscale(74));
+
+								let threshold90 = mapOne.append("g")
+									.attr("id", "average")
+									.attr("transform", `translate(${devLinearScale(90)}, 0)`);
+								threshold90.append('line')
+									.attr("x1", 0)
+									.attr("x2", 0)
+									.attr("y1", margin.top)
+									.attr("y2", height - margin.bottom)
+									.style("stroke-width", 2)
+									.style("stroke", devscale(89));
+								threshold90.append('text')
+									.attr("x", 0)
+									.attr("y", margin.top-4)
+									.text(90)
+									.style("text-anchor", "middle")
+									.style("fill", devscale(89));
+							}
+							if(step.index == 14 && step.direction == "down"){
+								highlightRegion("LT00", "HU10", "PL12");
 							}
 						}
 
@@ -280,14 +352,56 @@ function init() {
 							return histo(geojsonNUTS2.features).map((bin) => bin.length);
 						}
 
-						d3.selectAll(".highlight")
-							.on("mouseover", function(){
-							let countryCode = d3.select(this).attr("id");
-							d3.selectAll(`.region:not(.${countryCode})`)
-								.style("opacity", 0.2);
-							}).on("mouseout", function(){
+						//Country highlighting
+						function highlightCountryRegions(countrycode){
+								d3.selectAll(`.region:not(.${countrycode})`)
+									.style("opacity", 0.2);
+								d3.select(`.country#${countrycode}`)
+									.style("filter", "url(#shadow)");
+						}
+
+						function dehighlightCountryRegions(countrycode){
 							d3.selectAll(".region")
 								.style("opacity", 1);
+							d3.select(`.country#${countrycode}`)
+								.style("filter", "none");
+						}
+						d3.selectAll(".highlight.country")
+							.on("mouseover", function(){
+								let countryCode = d3.select(this).attr("id");
+								highlightCountryRegions(countryCode);
+							}).on("mouseout", function(){
+								let countryCode = d3.select(this).attr("id");
+								dehighlightCountryRegions(countryCode);
+							});
+						
+						//Region highlighting
+						function highlightRegion(regioncode, ...moreRegions){
+								d3.selectAll(`.region:not(#${regioncode})`)
+									.style("opacity", 0.2);
+								d3.select(`.region#${regioncode}`)
+									.style("filter", "url(#shadow)");
+								
+								moreRegions.forEach(function(region){
+									d3.select(".region#" + region)
+										.style("opacity", 1)
+										.style("filter", "url(#shadow)")
+								});
+						}
+
+						function dehighlightRegion(...regioncode){
+							d3.selectAll(".region")
+								.style("opacity", 1);
+							d3.select(`.region#${regioncode}`)
+								.style("filter", "none");
+						}
+						d3.selectAll(".highlight.region")
+							.on("mouseover", function(){
+								let regionCode = d3.select(this).attr("id");
+								highlightRegion(regionCode);
+							}).on("mouseout", function(){
+								let regionCode = d3.select(this).attr("id");
+								dehighlightRegion(regionCode);
 							});
 						
 				
