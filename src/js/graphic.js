@@ -4,7 +4,7 @@ import {select} from "../js/utils/dom.js";
 import "intersection-observer";
 import scrollama from "scrollama";
 import { legendColor } from "d3-svg-legend";
-import { toCircle, fromCircle } from "flubber";
+import { toCircle, fromCircle, toRect, fromRect } from "flubber";
 
 //TODO: handle resize
 function resize() {}
@@ -23,7 +23,8 @@ function init() {
 		.projection(projection);
 	
 	d3.json("assets/data/NUTS2_20M_2013_topo.json", function(nuts2) {
-		d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0.json", function(nuts0) {
+		//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0.json", function(nuts0) {
+		d3.json("assets/data/NUTS0_20M_2013_topo_cleaned.json", function(nuts0) {
 			d3.json("assets/data/land.json", function(land) {
 				d3.json("assets/data/capitals.json", function(capitals) {
 					d3.csv('assets/data/regiondata.csv', function(regiondata){
@@ -108,13 +109,20 @@ function init() {
 							}
 
 							if(step.index == 9 && step.direction == "down"){
-								countries.style("opacity", 0);
+								//countries.style("opacity", 0);
 								chorolegend.style("opacity", 0);
 								landsilhouette.style("opacity", 0.3);
 								caps.style("opacity", 0);
 								graticule.style("opacity", 0);
-								regions
-									.transition().duration(1000)
+
+								countries.transition().duration(2000)
+									.style("stroke", "#333333")
+									.delay((d, i) => i*200)
+									.attrTween("d", function(d){
+										return toRect(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16) - 6, countryScale(d.properties.CNTR_CODE) - 6, 12, 12);
+									});
+
+								regions.transition().duration(2000)
 									.delay((d, i) => i*20)
 									.attrTween("d", function(d){
 										return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
@@ -136,6 +144,13 @@ function init() {
 								caps.style("opacity", 1);
 								graticule.style("opacity", 1);
 								d3.select(".y-axis").style("opacity", 0);
+								countries
+									.transition().duration(2000)
+									.style("stroke", "#ffffff")
+									.delay((d, i) => i*200)
+									.attrTween("d", function(d){
+										return fromRect(devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6, 6, path(d.geometry));
+									});	
 								regions
 									.transition().duration(2000)
 									.delay((d, i) => i*20)
@@ -153,7 +168,7 @@ function init() {
 									.attr("x2", 0)
 									.attr("y1", margin.top)
 									.attr("y2", height - margin.bottom)
-									.style("stroke-width", 2)
+									.style("stroke-width", 1)
 									.style("stroke", "#000000");
 								average.append('text')
 									.attr("x", 0)
@@ -161,22 +176,28 @@ function init() {
 									.text(100)
 									.style("text-anchor", "middle")
 									.style("fill", "#000000");
-
+							}
+							if(step.index == 9 && step.direction == "up"){
+								d3.select("#average").remove();
 							}
 
 							if(step.index == 11 && step.direction == "down"){
 								highlightRegion("UKI3")
 							}
 							if(step.index == 10 && step.direction == "up"){
-								dehighlightRegion("UKI3")
+								dehighlightRegions()
 							}
 
 							if(step.index == 12 && step.direction == "down"){
-								dehighlightRegion("uKI3");
+								dehighlightRegions();
 								devLinearScale.domain([20, 200])
 								regions.transition().duration(1000)
 									.attrTween("d", function(d){
 									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
+									});
+								countries.transition().duration(1000)
+									.attrTween("d", function(d){
+									return toRect(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16) - 6, countryScale(d.properties.CNTR_CODE) - 6, 12, 12);
 									});
 									d3.select("#average")
 										.transition().duration(1000)
@@ -185,15 +206,19 @@ function init() {
 							if(step.index == 11 && step.direction == "up"){
 								devLinearScale.domain([margin.left, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps16)]);
 								regions.transition().duration(1000)
-								.attrTween("d", function(d){
-									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
-								});
+									.attrTween("d", function(d){
+										return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale	(d.properties.CNTR_CODE), 6);
+									});
+								countries.transition().duration(1000)
+									.attrTween("d", function(d){
+										return toRect(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16) - 6, 	countryScale(d.properties.CNTR_CODE) - 6, 12, 12);
+									});
 							}
 							
 							//Add lines for thresholds
 							if(step.index == 13 && step.direction == "down"){
 								let threshold75 = mapOne.append("g")
-									.attr("id", "average")
+									.attr("id", "threshold75")
 									.attr("transform", `translate(${devLinearScale(75)}, 0)`);
 								threshold75.append('line')
 									.attr("x1", 0)
@@ -210,7 +235,7 @@ function init() {
 									.style("fill", devscale(74));
 
 								let threshold90 = mapOne.append("g")
-									.attr("id", "average")
+									.attr("id", "threshold90")
 									.attr("transform", `translate(${devLinearScale(90)}, 0)`);
 								threshold90.append('line')
 									.attr("x1", 0)
@@ -226,8 +251,16 @@ function init() {
 									.style("text-anchor", "middle")
 									.style("fill", devscale(89));
 							}
+							if(step.index == 12 && step.direction == "up"){
+								d3.select("#threshold75").remove();
+								d3.select("#threshold90").remove();
+							}
+
 							if(step.index == 14 && step.direction == "down"){
 								highlightRegion("LT00", "HU10", "PL12");
+							}
+							if(step.index == 13 && step.direction == "up"){
+								dehighlightRegions();
 							}
 						}
 
@@ -267,7 +300,7 @@ function init() {
 							.range([margin.left, width - margin.right])
 
 						//TODO: format number strings as numbers
-						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.NUTS_RG_20M_2013_4326);
+						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.data);
 
 						const mapPadding = 10;
 						projection.fitExtent([[mapPadding,mapPadding], [width - mapPadding, height - mapPadding]], geojsonNUTS2);
@@ -298,13 +331,14 @@ function init() {
 							.attr("class", "country")
 							.attr("d", path)
 							.attr("id", (d) => d.id)
-							.style("fill", function(d){
+							.style("fill", (d) => devscale(d.properties.gdppps16));
+							/*.style("fill", function(d){
 								let regdata = regiondata.filter(function(el){
 									return el.geo == d.id;
 								});
 								if(regdata.length == 0){ return "#f1f1f1"; }
 								else{return devscale(regdata[0].gdppps16);}
-							});
+							});*/
 						
 						//TODO: add data to capitals, animate them to dot plot
 						//TODO: remove Andorra, Liechtenstein, San Marino
@@ -377,34 +411,31 @@ function init() {
 						
 						//Region highlighting
 						function highlightRegion(regioncode, ...moreRegions){
-								d3.selectAll(`.region:not(#${regioncode})`)
-									.style("opacity", 0.2);
-								d3.select(`.region#${regioncode}`)
-									.style("filter", "url(#shadow)");
-								
-								moreRegions.forEach(function(region){
-									d3.select(".region#" + region)
-										.style("opacity", 1)
-										.style("filter", "url(#shadow)")
-								});
+							d3.selectAll(`.region:not(#${regioncode})`)
+								.style("opacity", 0.2);
+							d3.select(`.region#${regioncode}`)
+								.style("filter", "url(#shadow)");
+							
+							moreRegions.forEach(function(region){
+								d3.select(".region#" + region)
+									.style("opacity", 1)
+									.style("filter", "url(#shadow)")
+							});
 						}
 
-						function dehighlightRegion(...regioncode){
+						function dehighlightRegions(){
 							d3.selectAll(".region")
-								.style("opacity", 1);
-							d3.select(`.region#${regioncode}`)
-								.style("filter", "none");
+								.style("opacity", 1)
+								.style("filter", "none");							
 						}
+
 						d3.selectAll(".highlight.region")
 							.on("mouseover", function(){
 								let regionCode = d3.select(this).attr("id");
 								highlightRegion(regionCode);
 							}).on("mouseout", function(){
-								let regionCode = d3.select(this).attr("id");
-								dehighlightRegion(regionCode);
-							});
-						
-				
+								dehighlightRegions();
+							});			
 					})
 				})
 			})
