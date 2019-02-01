@@ -23,7 +23,6 @@ function init() {
 		.projection(projection);
 	
 	d3.json("assets/data/NUTS2_20M_2013_topo.json", function(nuts2) {
-		//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0.json", function(nuts0) {
 		d3.json("assets/data/NUTS0_20M_2013_topo_cleaned.json", function(nuts0) {
 			d3.json("assets/data/land.json", function(land) {
 				d3.json("assets/data/capitals.json", function(capitals) {
@@ -289,20 +288,25 @@ function init() {
 							return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME" && region.properties.CNTR_CODE != "LI";
 						})
 
-						const margin = {"top": 40, "left": 40, "bottom": 20, "right": 20};
+						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.data);
+						geojsonNUTS0.features = geojsonNUTS0.features.sort(function(x, y){
+							return d3.descending(+x.properties.gdppps16, +y.properties.gdppps16)
+						})
 
-						let countrycodes = countrydata.map((country) => country.geo);
+						let countrycodes = geojsonNUTS0.features.map((country) => country.properties.CNTR_CODE);
+
+						const margin = {"top": 40, "left": 40, "bottom": 20, "right": 20};
+						const mapPadding = 10;
+
+						//Scales for the dotplot
 						const countryScale = d3.scalePoint()
 							.domain(countrycodes)
 							.range([margin.top, height - margin.bottom])
 						const devLinearScale = d3.scaleLinear()
 							.domain([20, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps16)])
 							.range([margin.left, width - margin.right])
-
-						//TODO: format number strings as numbers
-						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.data);
-
-						const mapPadding = 10;
+						
+						//Set up map
 						projection.fitExtent([[mapPadding,mapPadding], [width - mapPadding, height - mapPadding]], geojsonNUTS2);
 
 						let graticule  = mapOne.append("path")
@@ -316,6 +320,11 @@ function init() {
 							.attr("class", "land")
 							.attr("d", path);
 
+						//Sort regions based on country gdppps16, so they animate in nice sequence
+						geojsonNUTS2.features = geojsonNUTS2.features.sort(function(x, y){
+							return d3.ascending(countryScale(x.properties.CNTR_CODE), countryScale(y.properties.CNTR_CODE))
+						});
+						
 						let regions = mapOne.selectAll("path.region")
 							.data(geojsonNUTS2.features)
 							.enter().append("path")
@@ -331,6 +340,8 @@ function init() {
 							.attr("d", path)
 							.attr("id", (d) => d.id)
 							.style("fill", (d) => devscale(d.properties.gdppps16));
+
+						//TODO: some country labelling? https://bl.ocks.org/veltman/403f95aee728d4a043b142c52c113f82
 						
 						//TODO: add data to capitals, animate them to dot plot
 						//TODO: remove Andorra, Liechtenstein, San Marino
