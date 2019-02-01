@@ -190,17 +190,17 @@ function init() {
 
 							if(step.index == 12 && step.direction == "down"){
 								dehighlightRegions();
-								devLinearScale.domain([20, 200])
-								regions.transition().duration(1000)
+								devLinearScale.domain([20, 260])
+								regions.transition().duration(2000)
 									.attrTween("d", function(d){
 									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), countryScale(d.properties.CNTR_CODE), 6);
 									});
-								countries.transition().duration(1000)
+								countries.transition().duration(2000)
 									.attrTween("d", function(d){
 									return toRect(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16) - 6, countryScale(d.properties.CNTR_CODE) - 6, 12, 12);
 									});
 									d3.select("#average")
-										.transition().duration(1000)
+										.transition().duration(2000)
 										.attr("transform", `translate(${devLinearScale(100)}, 0)`);
 							}
 							if(step.index == 11 && step.direction == "up"){
@@ -266,10 +266,10 @@ function init() {
 
 						const devscale = d3.scaleThreshold()
 							.domain([75, 90, 110, 125])
-							//.range(['#e66101','#fdb863','#f7f7f7','#b2abd2','#5e3c99']);
-							.range(["#2686A0","#94B9A7","#EDEAC2","#C6AA74","#A36B2B"].reverse());
-							//.range(["#C75DAA","#DEA9CC","#CCCCCC","#7DC5C7","#009B9F"]);//PurpleGreen
-							//.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())
+							//.range(['#e66101','#fdb863','#e7e7e7','#b2abd2','#5e3c99']);//PuOr
+							//.range(["#2686A0","#94B9A7","#EDEAC2","#C6AA74","#A36B2B"].reverse());//Cartocolors Earth
+							.range(["#C75DAA","#DEA9CC",'#dee2ef',"#7DC5C7","#009B9F"]);//Tropic, middle: #E2E0D7, #e3e9ef
+							//.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())//Cartocolors Tealrose
 
 						const absfundScale = d3.scaleThreshold()
 							.domain([200000000, 400000000, 1000000000, 5000000000])
@@ -324,7 +324,6 @@ function init() {
 							.attr("id", (d) => d.id)
 							.style("fill", (d) => devscale(+d.properties.gdppps16));
 
-						//TODO: add data to topojson, animate them to the dot plot too
 						let countries = mapOne.selectAll("path.country")
 							.data(geojsonNUTS0.features)
 							.enter().append("path")
@@ -332,13 +331,6 @@ function init() {
 							.attr("d", path)
 							.attr("id", (d) => d.id)
 							.style("fill", (d) => devscale(d.properties.gdppps16));
-							/*.style("fill", function(d){
-								let regdata = regiondata.filter(function(el){
-									return el.geo == d.id;
-								});
-								if(regdata.length == 0){ return "#f1f1f1"; }
-								else{return devscale(regdata[0].gdppps16);}
-							});*/
 						
 						//TODO: add data to capitals, animate them to dot plot
 						//TODO: remove Andorra, Liechtenstein, San Marino
@@ -346,7 +338,8 @@ function init() {
 							.data(capitals.features)
 							.enter().append("path")
 							.attr("class", "capital")
-							.attr("d", path.pointRadius(2))
+							.attr("d", path.pointRadius(3))
+							.style("filter", "url(#capitalshadow)")
 							.attr("id", (d) => d.name);
 
 						//Legend
@@ -389,7 +382,7 @@ function init() {
 						//Country highlighting
 						function highlightCountryRegions(countrycode){
 								d3.selectAll(`.region:not(.${countrycode})`)
-									.style("opacity", 0.2);
+									.style("opacity", 0.1);
 								d3.select(`.country#${countrycode}`)
 									.style("filter", "url(#shadow)");
 						}
@@ -412,7 +405,7 @@ function init() {
 						//Region highlighting
 						function highlightRegion(regioncode, ...moreRegions){
 							d3.selectAll(`.region:not(#${regioncode})`)
-								.style("opacity", 0.2);
+								.style("opacity", 0.1);
 							d3.select(`.region#${regioncode}`)
 								.style("filter", "url(#shadow)");
 							
