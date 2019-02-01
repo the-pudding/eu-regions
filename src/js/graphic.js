@@ -6,6 +6,7 @@ import scrollama from "scrollama";
 import { legendColor } from "d3-svg-legend";
 import { toCircle, fromCircle } from "flubber";
 
+//TODO: handle resize
 function resize() {}
 
 function init() {
@@ -213,7 +214,7 @@ function init() {
 						let regions = mapOne.selectAll("path.region")
 							.data(geojsonNUTS2.features)
 							.enter().append("path")
-							.attr("class", "region")
+							.attr("class", (d) => `region ${d.properties.CNTR_CODE}`)
 							.attr("d", path)
 							.attr("id", (d) => d.id)
 							.style("fill", (d) => devscale(+d.properties.gdppps16));
@@ -233,7 +234,8 @@ function init() {
 								else{return devscale(regdata[0].gdppps16);}
 							});
 						
-						//TODO: add data to capitals, animate them to
+						//TODO: add data to capitals, animate them to dot plot
+						//TODO: remove Andorra, Liechtenstein, San Marino
 						let caps = mapOne.selectAll("circle.capital")
 							.data(capitals.features)
 							.enter().append("path")
@@ -277,6 +279,17 @@ function init() {
 								.thresholds(thresholds);
 							return histo(geojsonNUTS2.features).map((bin) => bin.length);
 						}
+
+						d3.selectAll(".highlight")
+							.on("mouseover", function(){
+							let countryCode = d3.select(this).attr("id");
+							d3.selectAll(`.region:not(.${countryCode})`)
+								.style("opacity", 0.2);
+							}).on("mouseout", function(){
+							d3.selectAll(".region")
+								.style("opacity", 1);
+							});
+						
 				
 					})
 				})
