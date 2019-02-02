@@ -264,23 +264,29 @@ function init() {
 						}
 
 						const devscale = d3.scaleThreshold()
-							.domain([75, 90, 110, 125])
+							.domain([75, 90, 100, 110, 125])
 							//.range(['#e66101','#fdb863','#e7e7e7','#b2abd2','#5e3c99']);//PuOr
 							//.range(["#2686A0","#94B9A7","#EDEAC2","#C6AA74","#A36B2B"].reverse());//Cartocolors Earth
-							.range(["#C75DAA","#DEA9CC",'#dee2ef',"#7DC5C7","#009B9F"]);//Tropic, middle: #E2E0D7, #e3e9ef
+							//.range(["#C75DAA","#DEA9CC",'#dee2ef',"#7DC5C7","#009B9F"]);//Tropic, middle: #E2E0D7, #e3e9ef
 							//.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())//Cartocolors Tealrose
+							.range(["#009B9E","#42B7B9","#A7D3D4","#E4C1D9","#D691C1","#C75DAB"].reverse())
 
 						const absfundScale = d3.scaleThreshold()
-							.domain([200000000, 400000000, 1000000000, 5000000000])
-							.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+							.domain([500000000, 1000000000, 2000000000, 3000000000, 5000000000])
+							//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+							.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
+							//.range(["#704D9E","#AF56A9","#DD6CA1","#F5918C","#F9BD81","#F3E79A"].reverse());//Sunset
 
 						const percapitafundScale = d3.scaleThreshold()
-							.domain([25, 50, 100, 200])
-							.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+							.domain([25, 50, 75, 125, 200])
+							//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+							.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
 
+						
 						const fundpercgdpScale = d3.scaleThreshold()
-							.domain([1, 2, 3, 4])
-							.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+							.domain([1, 2, 3, 4, 5])
+							//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
+							.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
 
 						let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
 						//TODO: remove from the topojson
@@ -359,14 +365,15 @@ function init() {
 						  .attr("transform", `translate(${width - 150},20)`);
 
 						let legend = legendColor()
+							//.orient("horizontal")
 							.shapeWidth(50)
 							.labelFormat(d3.format(".2f"))
-							.labels(["Less developed", "In development", "Average", "Developed", "Very developed"])
+							.labels(["Less developed", "", "", "", "", "More developed"])
 							.scale(devscale);
 
 						mapOne.select(".chorolegend")
 							.call(legend);
-						let countrycounts = [7, 7, 6, 4, 4];
+						let countrycounts = [7, 7, 3, 3, 4, 4];
 						histogrammifyLegend(countrycounts, devscale.range());
 						
 						/* Helper functions */
@@ -375,7 +382,7 @@ function init() {
 							let histoScale = d3.scaleLinear()
 								.domain([0, d3.max(histovalues)])
 								.range([0, legendhistowidth])
-						
+							console.log(colors);
 							d3.selectAll(".cell rect").data(histovalues)
 								.transition().duration(1000)
 								.style("fill", (d, i) => colors[i])
