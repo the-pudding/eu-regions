@@ -1,0 +1,19 @@
+Mapshaper console commands to filter out non-EU countries and regions
+-filter 'CNTR_CODE !== "TR"'
+-filter 'CNTR_CODE !== "MK"'
+-filter 'CNTR_CODE !== "NO"'
+-filter 'CNTR_CODE !== "IS"'
+-filter 'CNTR_CODE !== "CH"'
+-filter 'CNTR_CODE !== "ME"'
+-filter 'CNTR_CODE !== "LI"'
+
+
+For filtering out the outre mers of France, Azores, Madeira, Canarias
+-filter 'NUTS_ID !== "FRA1"'
+-filter 'NUTS_ID !== "FRA2"'
+-filter 'NUTS_ID !== "FRA3"'
+-filter 'NUTS_ID !== "FRA4"'
+-filter 'NUTS_ID !== "FRA5"'
+-filter 'NUTS_ID !== "PT20"'
+-filter 'NUTS_ID !== "PT30"'
+-filter 'NUTS_ID !== "ES70"'

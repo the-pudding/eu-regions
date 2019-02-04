@@ -22,9 +22,10 @@ function init() {
 	let path = d3.geoPath()
 		.projection(projection);
 	
-	d3.json("assets/data/NUTS2_20M_2013_topo.json", function(nuts2) {
-		d3.json("assets/data/NUTS_RG_20M_2016_3035_LEVL_2.json", function(nuts2_16) {
-			d3.json("assets/data/NUTS0_20M_2013_topo_cleaned.json", function(nuts0) {
+	d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered_merged.json", function(nuts2) {
+		d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered.json", function(nuts2_16) {
+			//d3.json("assets/data/NUTS0_20M_2013_topo_cleaned.json", function(nuts0) {
+			d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0_filtered_merged.json", function(nuts0) {
 				d3.json("assets/data/land.json", function(land) {
 					d3.json("assets/data/capitals.json", function(capitals) {
 						d3.csv('assets/data/regiondata.csv', function(regiondata){
@@ -109,11 +110,14 @@ function init() {
 								}
 
 								if(step.index == 9 && step.direction == "down"){
-									//countries.style("opacity", 0);
 									chorolegend.style("opacity", 0);
 									landsilhouette.style("opacity", 0.3);
-									caps.style("opacity", 0);
+									othercaps.style("opacity", 0);
 									graticule.style("opacity", 0);
+
+									eucaps.transition().delay(1000).duration(2000)
+										.attr("cx", (d) => devLinearScale(+d.properties.gdppps16))
+										.attr("cy", (d) => countryScale(d.properties.CNTR_CODE));
 
 									countries.transition().duration(2000)
 										.style("stroke", "#333333")
@@ -141,9 +145,12 @@ function init() {
 										.style("fill-opacity", 0);
 									chorolegend.style("opacity", 1);
 									landsilhouette.style("opacity", 1);
-									caps.style("opacity", 1);
+									othercaps.style("opacity", 1);
 									graticule.style("opacity", 1);
 									d3.select(".y-axis").style("opacity", 0);
+									eucaps.transition().delay(1000).duration(2000)
+										.attr("cx", (d) => projection(d.geometry.coordinates)[0])
+										.attr("cy", (d) => projection(d.geometry.coordinates)[1]);
 									countries
 										.transition().duration(2000)
 										.style("stroke", "#ffffff")
@@ -290,7 +297,7 @@ function init() {
 								.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
 
 							let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
-							let geojsonNUTS2_16 = topojson.feature(nuts2_16, nuts2_16.objects.NUTS_RG_20M_2016_3035);
+							//let geojsonNUTS2_16 = topojson.feature(nuts2_16, nuts2_16.objects.NUTS_RG_20M_2016_3035);
 							//TODO: remove from the topojson
 							geojsonNUTS2.features = geojsonNUTS2.features.filter(function(region){
 								return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && 	region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && 	region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME" && 	region.properties.CNTR_CODE != "LI";
@@ -352,9 +359,21 @@ function init() {
 							//TODO: some country labelling? https://bl.ocks.org/veltman/403f95aee728d4a043b142c52c113f82
 
 							//TODO: add data to capitals, animate them to dot plot
-							//TODO: remove Andorra, Liechtenstein, San Marino
-							let caps = mapOne.selectAll("circle.capital")
-								.data(capitals.features)
+							let eucapsFeatures = capitals.features.filter((cap) => cap.properties.NUTS_ID);
+							let othercapsFeatures = capitals.features.filter((cap) => !cap.properties.NUTS_ID);
+							
+							let eucaps = mapOne.selectAll("circle.capital")
+								.data(eucapsFeatures)
+								.enter().append("circle")
+								.attr("class", "eucapital")
+								.attr("r", 2.5)
+								.attr("cx", (d) => projection(d.geometry.coordinates)[0])
+								.attr("cy", (d) => projection(d.geometry.coordinates)[1])
+								.style("filter", "url(#capitalshadow)")
+								.attr("id", (d) => d.name);
+							
+							let othercaps = mapOne.selectAll("circle.capital")
+								.data(othercapsFeatures)
 								.enter().append("path")
 								.attr("class", "capital")
 								.attr("d", path.pointRadius(3))
