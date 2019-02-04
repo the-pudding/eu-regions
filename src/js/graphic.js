@@ -68,6 +68,8 @@ function init() {
 									regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
 
 									histogrammifyLegend(getRegionFrequencies("totalpayments0716", absfundScale.domain()), 	absfundScale.range());
+									d3.selectAll(".cell text.label").data(["<50m", "50-100m", "100-200m", "200-300m", "300-500m", ">500m"])
+										.text((d) => (d));
 								}
 								if(step.index == 4 && step.direction == "up"){
 									regions.style("fill", (d) => devscale(d.properties.gdppps16))
@@ -198,14 +200,14 @@ function init() {
 								}
 
 								if(step.index == 11 && step.direction == "down"){
-									highlightRegion("UKI3")
+									highlightRegions("mapone", ["UKI3"])
 								}
 								if(step.index == 10 && step.direction == "up"){
-									dehighlightRegions()
+									dehighlightRegions("mapone")
 								}
 
 								if(step.index == 12 && step.direction == "down"){
-									dehighlightRegions();
+									dehighlightRegions("mapone");
 									devLinearScale.domain([20, 260])
 									regions.transition().duration(2000)
 										.attrTween("d", function(d){
@@ -277,10 +279,10 @@ function init() {
 								}
 
 								if(step.index == 14 && step.direction == "down"){
-									highlightRegion("LT00", "HU10", "PL12");
+									highlightRegions("mapone", ["LT00", "HU10", "PL12"]);
 								}
 								if(step.index == 13 && step.direction == "up"){
-									dehighlightRegions();
+									dehighlightRegions("mapone");
 								}
 							}
 
@@ -441,7 +443,7 @@ function init() {
 								}
 								if(year == 2016){
 									features = geojsonNUTS2_16.features;
-									//Some regions were recoded (and not merged)
+									//Some regions were recoded (and have no merged data)
 									features.forEach(function(region){
 										if(region.id == "PL71"){
 											region.id = "PL11";
@@ -548,21 +550,17 @@ function init() {
 								});
 							
 							//Region highlighting
-							function getRegionsByThreshold(th){
+							function getRegionsByThresholds(thlow, thhigh, measure){
 								return geojsonNUTS2.features.filter(function(region){
-									//TODO: filter by threshold intervals
-									return region.properties.gdppps16 < th;
+									return region.properties[measure] <= +thhigh && region.properties[measure] > +thlow;
 								}).map((region) => region.properties.NUTS_ID);
 							}
 
-							function highlightRegion(mapid, regioncode, ...moreRegions){
-								d3.selectAll(`#${mapid} .region:not(#${regioncode})`)
-									.style("opacity", 0.1);
-								d3.select(`.region#${regioncode}`)
-									.style("filter", "url(#shadow)");
-
-								moreRegions.forEach(function(region){
-									d3.select(`${mapid} .region#` + region)
+							function highlightRegions(mapid, regioncodes){
+								d3.selectAll(`#${mapid} .region`)
+									.style("opacity", 0.1)
+								regioncodes.forEach(function(region){
+									d3.select(`#${mapid} .region#` + region)
 										.style("opacity", 1)
 										.style("filter", "url(#shadow)")
 								});
@@ -577,19 +575,21 @@ function init() {
 							d3.selectAll(".highlight.region")
 								.on("mouseover", function(){
 									let regionCode = d3.select(this).attr("id");
-									highlightRegion("mapone", regionCode);
+									highlightRegions("mapone", [regionCode]);
 								}).on("mouseout", function(){
 									dehighlightRegions("mapone");
 								});
-							//TODO: make it work with arrays of region id's
-							/*d3.selectAll(".textlegend")
+							
+							d3.selectAll(".textlegend")
 								.on("mouseover", function(){
-									let threshold = d3.select(this).attr("data-threshold");
-									let regionsToHighlight = getRegionsByThreshold(threshold);
-									highlightRegion(regionsToHighlight.toString());
+									let thHigh = d3.select(this).attr("data-th-high");
+									let thLow = d3.select(this).attr("data-th-low");
+									let measure = d3.select(this).attr("data-measure");
+									let regionsToHighlight = getRegionsByThresholds(thLow, thHigh, measure);
+									highlightRegions("mapone", regionsToHighlight);
 								}).on("mouseout", function(){
-									dehighlightRegions();
-								});*/		
+									dehighlightRegions("mapone");
+								});	
 						})
 					})
 				})
