@@ -29,7 +29,6 @@
 { "type": "Feature", "properties": { "name": "Bucharest", "NUTS_ID": "RO32", "CNTR_CODE": "RO", "gdppps16": "139" }, "geometry": { "type": "Point", "coordinates": [ 26.098000795350401, 44.435317663494573 ] } },
 { "type": "Feature", "properties": { "name": "Stockholm", "NUTS_ID": "SE11", "CNTR_CODE": "SE", "gdppps16": "173" }, "geometry": { "type": "Point", "coordinates": [ 18.095388874180912, 59.35270581286585 ] } },
 { "type": "Feature", "properties": { "name": "London", "NUTS_ID": "UKI3", "CNTR_CODE": "UK", "gdppps16": "611" }, "geometry": { "type": "Point", "coordinates": [ -0.118667702475932, 51.5019405883275 ] } },
-{ "type": "Feature", "properties": { "name": "Vaduz", "NUTS_ID": null, "CNTR_CODE": null, "gdppps16": null }, "geometry": { "type": "Point", "coordinates": [ 9.516669472907267, 47.133723774293571 ] } },
 { "type": "Feature", "properties": { "name": "Doha", "NUTS_ID": null, "CNTR_CODE": null, "gdppps16": null }, "geometry": { "type": "Point", "coordinates": [ 51.532967894299304, 25.286556008906587 ] } },
 { "type": "Feature", "properties": { "name": "Podgorica", "NUTS_ID": null, "CNTR_CODE": null, "gdppps16": null }, "geometry": { "type": "Point", "coordinates": [ 19.266306924118226, 42.465972512881706 ] } },
 { "type": "Feature", "properties": { "name": "Bern", "NUTS_ID": null, "CNTR_CODE": null, "gdppps16": null }, "geometry": { "type": "Point", "coordinates": [ 7.466975462482424, 46.916682758667719 ] } },

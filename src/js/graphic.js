@@ -122,7 +122,9 @@ function init() {
 									othercaps.style("opacity", 0);
 									graticule.style("opacity", 0);
 
-									eucaps.transition().delay(1000).duration(2000)
+									eucaps.transition()
+										.delay((d,i) => 1000 + 100*i)
+										.duration(2000)
 										.attr("cx", (d) => devLinearScale(+d.properties.gdppps16))
 										.attr("cy", (d) => countryScale(d.properties.CNTR_CODE));
 
@@ -213,20 +215,24 @@ function init() {
 										.attrTween("d", function(d){
 										return toRect(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16) - 6, 	countryScale(d.properties.CNTR_CODE) - 6, 12, 12);
 										});
-										d3.select("#average")
-											.transition().duration(2000)
-											.attr("transform", `translate(${devLinearScale(100)}, 0)`);
+									d3.select("#average")
+										.transition().duration(2000)
+										.attr("transform", `translate(${devLinearScale(100)}, 0)`);
+									eucaps.transition().duration(2000)
+										.attr("cx", (d) => devLinearScale(+d.properties.gdppps16));
 								}
 								if(step.index == 11 && step.direction == "up"){
 									devLinearScale.domain([margin.left, d3.max(geojsonNUTS2.features, (d) => 	+d.properties.gdppps16)]);
-									regions.transition().duration(1000)
+									regions.transition().duration(2000)
 										.attrTween("d", function(d){
 											return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), 	countryScale	(d.properties.CNTR_CODE), 6);
 										});
-									countries.transition().duration(1000)
+									countries.transition().duration(2000)
 										.attrTween("d", function(d){
 											return toRect(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16) - 	6, 	countryScale(d.properties.CNTR_CODE) - 6, 12, 12);
 										});
+									eucaps.transition().duration(2000)
+										.attr("cx", (d) => devLinearScale(+d.properties.gdppps16));
 								}
 
 								//Add lines for thresholds
@@ -363,16 +369,6 @@ function init() {
 							let eucapsFeatures = capitals.features.filter((cap) => cap.properties.NUTS_ID);
 							let othercapsFeatures = capitals.features.filter((cap) => !cap.properties.NUTS_ID);
 							
-							let eucaps = mapOne.selectAll("circle.capital")
-								.data(eucapsFeatures)
-								.enter().append("circle")
-								.attr("class", "eucapital")
-								.attr("r", 2.5)
-								.attr("cx", (d) => projection(d.geometry.coordinates)[0])
-								.attr("cy", (d) => projection(d.geometry.coordinates)[1])
-								.style("filter", "url(#capitalshadow)")
-								.attr("id", (d) => d.name);
-							
 							let othercaps = mapOne.selectAll("circle.capital")
 								.data(othercapsFeatures)
 								.enter().append("path")
@@ -381,15 +377,26 @@ function init() {
 								.style("filter", "url(#capitalshadow)")
 								.attr("id", (d) => d.name);
 
+							let eucaps = mapOne.selectAll("circle.eucapital")
+								.data(eucapsFeatures)
+								.enter().append("circle")
+								.attr("class", "capital eucapital")
+								.attr("r", 3)
+								.attr("cx", (d) => projection(d.geometry.coordinates)[0])
+								.attr("cy", (d) => projection(d.geometry.coordinates)[1])
+								.style("filter", "url(#capitalshadow)")
+								.attr("id", (d) => d.name);
+
 							//Legend
 							let chorolegend = mapOne.append("g")
 							  .attr("class", "chorolegend tk-atlas")
-							  .attr("transform", `translate(${width - 150},20)`);
+							  .attr("transform", `translate(${width - 170}, 100)`);
 
 							let legend = legendColor()
-								//.orient("horizontal")
-								.shapeWidth(50)
-								.labelFormat(d3.format(".2f"))
+								.orient("horizontal")
+								.labelWrap(50)
+								//.shapePadding()
+								.shapeWidth(20)
 								.labels(["Less developed", "", "", "", "", "More developed"])
 								.scale(devscale);
 
@@ -499,15 +506,15 @@ function init() {
 
 							/* Helper functions */
 							function histogrammifyLegend(histovalues, colors){
-								const legendhistowidth = 100;
+								const legendhistoheight = 100;
 								let histoScale = d3.scaleLinear()
 									.domain([0, d3.max(histovalues)])
-									.range([0, legendhistowidth])
+									.range([0, legendhistoheight])
 								d3.selectAll(".cell rect").data(histovalues)
 									.transition().duration(1000)
 									.style("fill", (d, i) => colors[i])
-									.attr("width", (d) => histoScale(d))
-									.attr("transform", (d) => `translate(${-histoScale(d) + 48},0)`);
+									.attr("height", (d) => histoScale(d))
+									.attr("transform", (d) => `translate(0, -${histoScale(d) - 14})`);
 							}
 
 							function getRegionFrequencies(property, thresholds){
