@@ -23,8 +23,7 @@ function init() {
 		.projection(projection);
 	
 	d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered_merged.json", function(nuts2) {
-		d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered.json", function(nuts2_16) {
-			//d3.json("assets/data/NUTS0_20M_2013_topo_cleaned.json", function(nuts0) {
+		d3.json("assets/data/NUTS_RG_20M_2016_4326_LEVL_2_filtered_merged.json", function(nuts2_16) {
 			d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0_filtered_merged.json", function(nuts0) {
 				d3.json("assets/data/land.json", function(land) {
 					d3.json("assets/data/capitals.json", function(capitals) {
@@ -75,6 +74,14 @@ function init() {
 
 									histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 								}
+
+								/*if(step.index == 5 && step.direction == "down"){
+									let poland = geojsonNUTS0.features.filter(country => country.id == "PL")[0];
+									let zoomedprojection = projection.fitExtent([[mapPadding,mapPadding], [width - mapPadding, height - mapPadding]], poland);
+									let zoomedGeoPath = path(zoomedprojection);
+									regions.transition().duration(2000)
+										.attr("d", zoomedGeoPath);
+								}*/
 
 								if(step.index == 6 && step.direction == "down"){
 									regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
@@ -297,11 +304,7 @@ function init() {
 								.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
 
 							let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
-							//let geojsonNUTS2_16 = topojson.feature(nuts2_16, nuts2_16.objects.NUTS_RG_20M_2016_3035);
-							//TODO: remove from the topojson
-							geojsonNUTS2.features = geojsonNUTS2.features.filter(function(region){
-								return region.properties.CNTR_CODE != "TR" && region.properties.CNTR_CODE != "NO" && 	region.properties.CNTR_CODE != "CH" && region.properties.CNTR_CODE != "IS"  && 	region.properties.CNTR_CODE != "MK" && region.properties.CNTR_CODE != "ME" && 	region.properties.CNTR_CODE != "LI";
-							})
+							let geojsonNUTS2_16 = topojson.feature(nuts2_16, nuts2_16.objects.data);
 
 							let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.data);
 							geojsonNUTS0.features = geojsonNUTS0.features.sort(function(x, y){
@@ -357,8 +360,6 @@ function init() {
 								.style("fill", (d) => devscale(d.properties.gdppps16));
 
 							//TODO: some country labelling? https://bl.ocks.org/veltman/403f95aee728d4a043b142c52c113f82
-
-							//TODO: add data to capitals, animate them to dot plot
 							let eucapsFeatures = capitals.features.filter((cap) => cap.properties.NUTS_ID);
 							let othercapsFeatures = capitals.features.filter((cap) => !cap.properties.NUTS_ID);
 							
@@ -402,24 +403,30 @@ function init() {
 							let smallmapHeight = 400;
 							let smallmapPadding = 80;
 
-							/*function makeSmallmap(elementid, countryid, year){
-								let map = d3.select(elementid)
+							function makeSmallmap(elementid, countryid, year){
+								let map = d3.select("#" + elementid)
 									.attr("width", smallmapWidth)
 									.attr("height", smallmapHeight);
 
 								let country = geojsonNUTS0.features.filter(country => country.id == countryid)[0];
-								projection.fitExtent([[smallmapPadding,smallmapPadding], [smallmapWidth - smallmapPadding, 		smallmapHeight - smallmapPadding]], country);
+
+								let smallprojection = d3.geoAzimuthalEqualArea()
+									.rotate([-10,-52,0])
+									.fitExtent([[smallmapPadding,smallmapPadding], [smallmapWidth - smallmapPadding, smallmapHeight - smallmapPadding]], country);;
+						
+								let smallGeoPath = d3.geoPath()
+									.projection(smallprojection);
 
 								map.append("path")
 									.datum(d3.geoGraticule())
-									.attr("d", path)
+									.attr("d", smallGeoPath)
 									.attr("class", "graticule");
 
 								map.selectAll("path.land")
 									.data(land.features)
 									.enter().append("path")
 									.attr("class", "land")
-									.attr("d", path);
+									.attr("d", smallGeoPath);
 
 								let features;
 								if(year == 2013){
@@ -427,35 +434,68 @@ function init() {
 								}
 								if(year == 2016){
 									features = geojsonNUTS2_16.features;
+									//Some regions were recoded (and not merged)
+									features.forEach(function(region){
+										if(region.id == "PL71"){
+											region.id = "PL11";
+											region.properties.NUTS_ID = "PL11";
+											region.properties.gdppps16 = "64";
+										}
+										if(region.id == "PL72"){
+											region.id = "PL33";
+											region.properties.NUTS_ID = "PL33";
+											region.properties.gdppps16 = "49";
+										}
+										if(region.id == "PL81"){
+											region.id = "P31";
+											region.properties.NUTS_ID = "PL31";
+											region.properties.gdppps16 = "47";
+										}
+										if(region.id == "PL82"){
+											region.id = "P32";
+											region.properties.NUTS_ID = "PL32";
+											region.properties.gdppps16 = "48";
+										}
+										if(region.id == "PL84"){
+											region.id = "P34";
+											region.properties.NUTS_ID = "PL34";
+											region.properties.gdppps16 = "48";
+										}
+									})
 								}
 
 								map.selectAll("path.region")
 									.data(features)
 									.enter().append("path")
 									.attr("class", (d) => `region ${d.properties.CNTR_CODE}`)
-									.attr("d", path)
+									.attr("d", smallGeoPath)
 									.attr("id", (d) => d.id)
-									.style("stroke", "#ffffff")
-									.style("stroke-width", 2);
 									.style("fill", (d) => devscale(+d.properties.gdppps16));
 
 								map.selectAll("path.country")
 									.data(geojsonNUTS0.features)
 									.enter().append("path")
 									.attr("class", "country")
-									.attr("d", path)
+									.attr("d", smallGeoPath)
 									.attr("id", (d) => d.id)
 									.style("fill", "none");
 								map.selectAll("circle.capital")
 									.data(capitals.features)
 									.enter().append("path")
 									.attr("class", "capital")
-									.attr("d", path.pointRadius(3))
+									.attr("d", smallGeoPath.pointRadius(3))
 									.style("filter", "url(#capitalshadow)")
 									.attr("id", (d) => d.name);
+
+								highlightCountryRegions(countryid, elementid);
 							}
-							makeSmallmap("#lithuania13", "LT", 2013);
-							makeSmallmap("#lithuania16", "LT", 2016);*/				
+							makeSmallmap("lithuania13", "LT", 2013);
+							makeSmallmap("lithuania16", "LT", 2016);
+							makeSmallmap("hungary13", "HU", 2013);
+							makeSmallmap("hungary16", "HU", 2016);
+							makeSmallmap("poland13", "PL", 2013);
+							makeSmallmap("poland16", "PL", 2016);
+
 
 							/* Helper functions */
 							function histogrammifyLegend(histovalues, colors){
@@ -478,26 +518,26 @@ function init() {
 							}
 
 							//Country highlighting
-							function highlightCountryRegions(countrycode){
-									d3.selectAll(`.region:not(.${countrycode})`)
+							function highlightCountryRegions(countrycode, mapid){
+									d3.selectAll(`#${mapid} .region:not(.${countrycode})`)
 										.style("opacity", 0.1);
-									d3.select(`.country#${countrycode}`)
+									d3.select(`#${mapid} .country#${countrycode}`)
 										.style("filter", "url(#shadow)");
 							}
 
-							function dehighlightCountryRegions(countrycode){
-								d3.selectAll(".region")
+							function dehighlightCountryRegions(countrycode, mapid){
+								d3.selectAll(`#${mapid} .region`)
 									.style("opacity", 1);
-								d3.select(`.country#${countrycode}`)
+								d3.select(`#${mapid} .country#${countrycode}`)
 									.style("filter", "none");
 							}
 							d3.selectAll(".highlight.country")
 								.on("mouseover", function(){
 									let countryCode = d3.select(this).attr("id");
-									highlightCountryRegions(countryCode);
+									highlightCountryRegions(countryCode, "mapone");
 								}).on("mouseout", function(){
 									let countryCode = d3.select(this).attr("id");
-									dehighlightCountryRegions(countryCode);
+									dehighlightCountryRegions(countryCode, "mapone");
 								});
 							
 							//Region highlighting
@@ -508,21 +548,21 @@ function init() {
 								}).map((region) => region.properties.NUTS_ID);
 							}
 
-							function highlightRegion(regioncode, ...moreRegions){
-								d3.selectAll(`.region:not(#${regioncode})`)
+							function highlightRegion(mapid, regioncode, ...moreRegions){
+								d3.selectAll(`#${mapid} .region:not(#${regioncode})`)
 									.style("opacity", 0.1);
 								d3.select(`.region#${regioncode}`)
 									.style("filter", "url(#shadow)");
 
 								moreRegions.forEach(function(region){
-									d3.select(".region#" + region)
+									d3.select(`${mapid} .region#` + region)
 										.style("opacity", 1)
 										.style("filter", "url(#shadow)")
 								});
 							}
 
-							function dehighlightRegions(){
-								d3.selectAll(".region")
+							function dehighlightRegions(mapid){
+								d3.selectAll(`#${mapid} .region`)
 									.style("opacity", 1)
 									.style("filter", "none");							
 							}
@@ -530,9 +570,9 @@ function init() {
 							d3.selectAll(".highlight.region")
 								.on("mouseover", function(){
 									let regionCode = d3.select(this).attr("id");
-									highlightRegion(regionCode);
+									highlightRegion("mapone", regionCode);
 								}).on("mouseout", function(){
-									dehighlightRegions();
+									dehighlightRegions("mapone");
 								});
 							//TODO: make it work with arrays of region id's
 							/*d3.selectAll(".textlegend")
