@@ -68,13 +68,17 @@ function init() {
 									regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
 
 									histogrammifyLegend(getRegionFrequencies("totalpayments0716", absfundScale.domain()), 	absfundScale.range());
-									d3.selectAll(".cell text.label").data(["<50m", "50-100m", "100-200m", "200-300m", "300-500m", ">500m"])
+									d3.selectAll(".cell text.label").data(absfundScale.labels)
 										.text((d) => (d));
+									d3.select(".label-outside").style("opacity", 0);
 								}
 								if(step.index == 4 && step.direction == "up"){
 									regions.style("fill", (d) => devscale(d.properties.gdppps16))
+									d3.selectAll(".cell text.label").data(devscale.labels)
+										.text((d) => (d));
 
 									histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
+									d3.select(".label-outside").style("opacity", 1);
 								}
 
 								/*if(step.index == 5 && step.direction == "down"){
@@ -89,37 +93,49 @@ function init() {
 									regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
 
 									histogrammifyLegend(getRegionFrequencies("totalpercapita0716", percapitafundScale.domain())	, absfundScale.range());
+									d3.selectAll(".cell text.label").data(percapitafundScale.labels)
+										.text((d) => (d));
 								}
 								if(step.index == 5 && step.direction == "up"){
 									regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
 
 									histogrammifyLegend(getRegionFrequencies("totalpayments0716", absfundScale.domain()), 	absfundScale.range());
+									d3.selectAll(".cell text.label").data(absfundScale.labels)
+										.text((d) => (d));
 								}
 
 								if(step.index == 7 && step.direction == "down"){
 									regions.style("fill", (d) => fundpercgdpScale(d.properties.fundpercgdp15))
 
-									histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), 	absfundScale.range());
+									histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), fundpercgdpScale.range());
+									d3.selectAll(".cell text.label").data(fundpercgdpScale.labels)
+										.text((d) => (d));
 								}
 								if(step.index == 6 && step.direction == "up"){
 									regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
 
-									histogrammifyLegend(getRegionFrequencies("totalpercapita0716", percapitafundScale.domain())	, absfundScale.range());
+									histogrammifyLegend(getRegionFrequencies("totalpercapita0716", percapitafundScale.domain())	, percapitafundScale.range());
+									d3.selectAll(".cell text.label").data(percapitafundScale.labels)
+										.text((d) => (d));
 								}
 
 								if(step.index == 8 && step.direction == "down"){
 									regions.style("fill", (d) => devscale(d.properties.gdppps16))
 
 									histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
+									d3.selectAll(".cell text.label").data(devscale.labels)
+										.text((d) => (d));
 								}
 								if(step.index == 7 && step.direction == "up"){
 									regions.style("fill", (d) => fundpercgdpScale(d.properties.fundpercgdp15))
 
-									histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), 	absfundScale.range());
+									histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), 	fundpercgdpScale.range());
+									d3.selectAll(".cell text.label").data(fundpercgdpScale.labels)
+										.text((d) => (d));
 								}
 
 								if(step.index == 9 && step.direction == "down"){
-									chorolegend.style("opacity", 0);
+									//chorolegend.style("opacity", 0);
 									landsilhouette.style("opacity", 0.3);
 									othercaps.style("opacity", 0);
 									graticule.style("opacity", 0);
@@ -154,7 +170,7 @@ function init() {
 								if(step.index == 8 && step.direction == "up"){
 									countries.style("opacity", 1)
 										.style("fill-opacity", 0);
-									chorolegend.style("opacity", 1);
+									//chorolegend.style("opacity", 1);
 									landsilhouette.style("opacity", 1);
 									othercaps.style("opacity", 1);
 									graticule.style("opacity", 1);
@@ -292,24 +308,27 @@ function init() {
 								//.range(["#2686A0","#94B9A7","#EDEAC2","#C6AA74","#A36B2B"].reverse());//Cartocolors Earth
 								//.range(["#C75DAA","#DEA9CC",'#dee2ef',"#7DC5C7","#009B9F"]);//Tropic, middle: #E2E0D7, 	#e3e9ef
 								//.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())//Cartocolors Tealrose
-								.range(["#009B9E","#42B7B9","#A7D3D4","#E4C1D9","#D691C1","#C75DAB"].reverse())
+								.range(["#009B9E","#42B7B9","#A7D3D4","#E4C1D9","#D691C1","#C75DAB"].reverse());
+							devscale.labels = ["less developed", "", "", "", "", "more developed"];
 
 							const absfundScale = d3.scaleThreshold()
 								.domain([500000000, 1000000000, 2000000000, 3000000000, 5000000000])
 								//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
 								.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
 								//.range(["#704D9E","#AF56A9","#DD6CA1","#F5918C","#F9BD81","#F3E79A"].reverse());//Sunset
+							absfundScale.labels = ["<50m €", "50-100m", "100-200m", "200-300m", "300-500m", ">500m €"];
 
 							const percapitafundScale = d3.scaleThreshold()
 								.domain([25, 50, 75, 125, 200])
 								//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
 								.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
-
+							percapitafundScale.labels = ["<25 €/cap/y", "25-50", "50-75", "75-125", "125-200", ">200 €/cap/y"];
 
 							const fundpercgdpScale = d3.scaleThreshold()
 								.domain([1, 2, 3, 4, 5])
 								//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
 								.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
+							fundpercgdpScale.labels = ["<1% gdp", "1-2", "2-3", "3-4", "4-5", ">5% gdp"];
 
 							let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
 							let geojsonNUTS2_16 = topojson.feature(nuts2_16, nuts2_16.objects.data);
@@ -333,7 +352,7 @@ function init() {
 								.range([margin.left, width - margin.right])
 
 							//Set up map
-							projection.fitExtent([[mapPadding,mapPadding], [width - mapPadding, height - mapPadding]], 	geojsonNUTS2);
+							projection.fitExtent([[mapPadding, mapPadding + 25], [width - mapPadding, height - mapPadding]], 	geojsonNUTS2);
 
 							let graticule  = mapOne.append("path")
 								.datum(d3.geoGraticule())
@@ -390,9 +409,9 @@ function init() {
 								.attr("id", (d) => d.name);
 
 							//Legend
-							let chorolegend = mapOne.append("g")
+							/*let chorolegend = mapOne.append("g")
 							  .attr("class", "chorolegend tk-atlas")
-							  .attr("transform", `translate(${width - 170}, 100)`);
+							  .attr("transform", `translate(${width - 170}, 150)`);
 
 							let legend = legendColor()
 								.orient("horizontal")
@@ -403,9 +422,32 @@ function init() {
 								.scale(devscale);
 
 							mapOne.select(".chorolegend")
-								.call(legend);
+								.call(legend);*/
+
 							let countrycounts = [7, 7, 3, 3, 4, 4];
 							histogrammifyLegend(countrycounts, devscale.range());
+
+							//Alternative legend
+							let chorolegendtop = mapOne.append("g")
+								.attr("class", "toplegend tk-atlas")
+								.attr("transform", "translate(0,0)");
+							let legendtop = legendColor()
+								.orient("horizontal")
+								.shapeWidth(width/6)
+								.labels(["less developed", "", "", "", "", "more developed"])
+								.labelOffset(-13)
+								.shapePadding(0)
+								.shapeHeight(20)
+								.scale(devscale);
+							mapOne.select(".toplegend")
+								.call(legendtop);
+
+							mapOne.append("text")
+								.attr("x", width/2)
+								.attr("y", 28)
+								.text("average")
+								.attr("class", "tk-atlas label-outside")
+								.style("text-anchor", "middle");
 
 							/* Little maps */
 							let smallmapWidth = 400;
@@ -443,8 +485,9 @@ function init() {
 								}
 								if(year == 2016){
 									features = geojsonNUTS2_16.features;
-									//Some regions were recoded (and have no merged data)
+									
 									features.forEach(function(region){
+										//Some regions were recoded (and have no merged data)
 										if(region.id == "PL71"){
 											region.id = "PL11";
 											region.properties.NUTS_ID = "PL11";
@@ -469,6 +512,31 @@ function init() {
 											region.id = "P34";
 											region.properties.NUTS_ID = "PL34";
 											region.properties.gdppps16 = "48";
+										}
+										//These are the regions that have split. No stats yet, so need to calculate from underlying NUTS3 regions
+										//This one is correct
+										if(region.id == "LT01"){
+											region.properties.gdppps16 = "109";
+										}
+										//To calculate
+										if(region.id == "LT02"){
+											region.properties.gdppps16 = "64";
+										}
+										//This one is correct
+										if(region.id == "HU11"){
+											region.properties.gdppps16 = "136";
+										}
+										//To calculate
+										if(region.id == "HU12"){
+											region.properties.gdppps16 = "59";
+										}
+										//To calculate
+										if(region.id == "PL91"){
+											region.properties.gdppps16 = "124";
+										}
+										//To calculate
+										if(region.id == "PL92"){
+											region.properties.gdppps16 = "59";
 										}
 									})
 								}
@@ -508,15 +576,15 @@ function init() {
 
 							/* Helper functions */
 							function histogrammifyLegend(histovalues, colors){
-								const legendhistoheight = 100;
+								/*const legendhistoheight = 100;
 								let histoScale = d3.scaleLinear()
 									.domain([0, d3.max(histovalues)])
-									.range([0, legendhistoheight])
+									.range([0, legendhistoheight])*/
 								d3.selectAll(".cell rect").data(histovalues)
 									.transition().duration(1000)
-									.style("fill", (d, i) => colors[i])
-									.attr("height", (d) => histoScale(d))
-									.attr("transform", (d) => `translate(0, -${histoScale(d) - 14})`);
+									.style("fill", (d, i) => colors[i]);
+									//.attr("height", (d) => histoScale(d))
+									//.attr("transform", (d) => `translate(0, -${histoScale(d) - 14})`);
 							}
 
 							function getRegionFrequencies(property, thresholds){
