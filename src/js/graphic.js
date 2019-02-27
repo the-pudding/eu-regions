@@ -452,9 +452,9 @@ function init() {
 							/* Little maps */
 							let smallmapWidth = 400;
 							let smallmapHeight = 400;
-							let smallmapPadding = 80;
+							let smallmapPadding = 40;
 
-							function makeSmallmap(elementid, countryid, year){
+							function makeSmallmap(elementid, countryid, year, color){
 								let map = d3.select("#" + elementid)
 									.attr("width", smallmapWidth)
 									.attr("height", smallmapHeight);
@@ -566,6 +566,7 @@ function init() {
 
 								highlightCountryRegions(countryid, elementid);
 							}
+
 							makeSmallmap("lithuania13", "LT", 2013);
 							makeSmallmap("lithuania16", "LT", 2016);
 							makeSmallmap("hungary13", "HU", 2013);
