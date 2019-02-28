@@ -15,6 +15,17 @@ function init() {
 	let mapOne = d3.select("svg#mapone")
 		.attr("width", width)
 		.attr("height", height);
+	mapOne.append("svg:defs").append("svg:marker")
+		.attr("id", "triangle")
+		.attr("refX", 6)
+		.attr("refY", 6)
+		.attr("markerWidth", 30)
+		.attr("markerHeight", 30)
+		.attr("markerUnits","userSpaceOnUse")
+		.attr("orient", "auto")
+		.append("path")
+		.attr("d", "M 0 0 12 6 0 12 3 6")
+		.style("fill", "black");
 
 	let projection = d3.geoAzimuthalEqualArea()
 		.rotate([-10,-52,0]);
@@ -136,6 +147,7 @@ function init() {
 
 								if(step.index == 5 && step.direction == "down"){
 									//chorolegend.style("opacity", 0);
+									scaleLegendCells();
 									landsilhouette.style("opacity", 0.3);
 									othercaps.style("opacity", 0);
 									graticule.style("opacity", 0);
@@ -194,22 +206,23 @@ function init() {
 								}
 
 								if(step.index == 6 && step.direction == "down"){
-									let average = mapOne.append("g")
+									let average = mapOne.insert("g", "path.region")
 										.attr("id", "average")
 										.attr("transform", `translate(${devLinearScale(100)}, 0)`);
 									average.append("line")
 										.attr("x1", 0)
 										.attr("x2", 0)
 										.attr("y1", margin.top)
-										.attr("y2", height - margin.bottom)
+										.attr("y2", height - 32)
 										.style("stroke-width", 1)
 										.style("stroke", "#000000");
 									average.append('text')
 										.attr("x", 0)
-										.attr("y", margin.top-4)
+										.attr("y", height - 20)
 										.text(100)
 										.style("text-anchor", "middle")
-										.style("fill", "#000000");
+										.style("fill", "#000000")
+										.attr("class", "label-outside tk-atlas");
 								}
 								if(step.index == 5 && step.direction == "up"){
 									d3.select("#average").remove();
@@ -217,14 +230,30 @@ function init() {
 
 								if(step.index == 7 && step.direction == "down"){
 									highlightRegions("mapone", ["UKI3"])
+									let arrow  = mapOne.append("g")
+										.attr("id", "arrow")
+										.attr("transform", `translate(${devLinearScale(610) - 40}, ${countryScale("UK") - 40})`)
+									arrow.append("line")
+            							.attr("x1", 0)
+            							.attr("y1", 0)
+            							.attr("x2", 30)
+            							.attr("y2", 30)
+            							.attr("stroke-width", 2)
+            							.attr("stroke", "black")
+            							.attr("marker-end", "url(#triangle)");
 								}
 								if(step.index == 6 && step.direction == "up"){
-									dehighlightRegions("mapone")
+									dehighlightRegions("mapone");
+									d3.select("#arrow").remove();
 								}
 
 								if(step.index == 8 && step.direction == "down"){
 									dehighlightRegions("mapone");
 									devLinearScale.domain([20, 260])
+									scaleLegendCells();
+									console.log(devLinearScale(600));
+									d3.select("#arrow").transition().duration(2000)
+										.attr("transform", `translate(${devLinearScale(610) - 40}, ${countryScale("UK") - 40})`)
 									regions.transition().duration(2000)
 										.attrTween("d", function(d){
 										return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), 	countryScale(d.properties.CNTR_CODE), 6);
@@ -255,39 +284,41 @@ function init() {
 
 								//Add lines for thresholds
 								if(step.index == 9 && step.direction == "down"){
-									let threshold75 = mapOne.append("g")
+									let threshold75 = mapOne.insert("g", "path.country")
 										.attr("id", "threshold75")
 										.attr("transform", `translate(${devLinearScale(75)}, 0)`);
 									threshold75.append('line')
 										.attr("x1", 0)
 										.attr("x2", 0)
 										.attr("y1", margin.top)
-										.attr("y2", height - margin.bottom)
-										.style("stroke-width", 2)
+										.attr("y2", height - 32)
+										.style("stroke-width", 1)
 										.style("stroke", devscale(74));
 									threshold75.append('text')
 										.attr("x", 0)
-										.attr("y", margin.top-4)
+										.attr("y", height - 20)
 										.text(75)
 										.style("text-anchor", "middle")
-										.style("fill", devscale(74));
+										.style("fill", devscale(74))
+										.attr("class", "label-outside tk-atlas");
 
-									let threshold90 = mapOne.append("g")
+									let threshold90 = mapOne.insert("g", "path.country")
 										.attr("id", "threshold90")
 										.attr("transform", `translate(${devLinearScale(90)}, 0)`);
 									threshold90.append('line')
 										.attr("x1", 0)
 										.attr("x2", 0)
 										.attr("y1", margin.top)
-										.attr("y2", height - margin.bottom)
-										.style("stroke-width", 2)
+										.attr("y2", height - 32)
+										.style("stroke-width", 1)
 										.style("stroke", devscale(89));
 									threshold90.append('text')
 										.attr("x", 0)
-										.attr("y", margin.top-4)
+										.attr("y", height - 20)
 										.text(90)
 										.style("text-anchor", "middle")
-										.style("fill", devscale(89));
+										.style("fill", devscale(89))
+										.attr("class", "label-outside tk-atlas");
 								}
 								if(step.index == 8 && step.direction == "up"){
 									d3.select("#threshold75").remove();
@@ -304,29 +335,21 @@ function init() {
 
 							const devscale = d3.scaleThreshold()
 								.domain([75, 90, 100, 110, 125])
-								//.range(['#e66101','#fdb863','#e7e7e7','#b2abd2','#5e3c99']);//PuOr
-								//.range(["#2686A0","#94B9A7","#EDEAC2","#C6AA74","#A36B2B"].reverse());//Cartocolors Earth
-								//.range(["#C75DAA","#DEA9CC",'#dee2ef',"#7DC5C7","#009B9F"]);//Tropic, middle: #E2E0D7, 	#e3e9ef
-								//.range(["#009392","#72aaa1","#f1eac8","#d98994","#d0587e"].reverse())//Cartocolors Tealrose
 								.range(["#009B9E","#42B7B9","#A7D3D4","#E4C1D9","#D691C1","#C75DAB"].reverse());
 							devscale.labels = ["less developed", "", "", "", "", "more developed"];
 
 							const absfundScale = d3.scaleThreshold()
 								.domain([500000000, 1000000000, 2000000000, 3000000000, 5000000000])
-								//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
 								.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
-								//.range(["#704D9E","#AF56A9","#DD6CA1","#F5918C","#F9BD81","#F3E79A"].reverse());//Sunset
 							absfundScale.labels = ["<50m €", "50-100m", "100-200m", "200-300m", "300-500m", ">500m €"];
 
 							const percapitafundScale = d3.scaleThreshold()
 								.domain([25, 50, 75, 125, 200])
-								//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
 								.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
 							percapitafundScale.labels = ["<25 €/cap/y", "25-50", "50-75", "75-125", "125-200", ">200 €/cap/y"];
 
 							const fundpercgdpScale = d3.scaleThreshold()
 								.domain([1, 2, 3, 4, 5])
-								//.range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c']);
 								.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
 							fundpercgdpScale.labels = ["<1% gdp", "1-2", "2-3", "3-4", "4-5", ">5% gdp"];
 
@@ -340,7 +363,7 @@ function init() {
 
 							let countrycodes = geojsonNUTS0.features.map((country) => country.properties.CNTR_CODE);
 
-							const margin = {"top": 40, "left": 40, "bottom": 20, "right": 20};
+							const margin = {"top": 40, "left": 40, "bottom": 50, "right": 20};
 							const mapPadding = 10;
 
 							//Scales for the dotplot
@@ -447,6 +470,7 @@ function init() {
 								.attr("y", 28)
 								.text("average")
 								.attr("class", "tk-atlas label-outside")
+								.attr("id", "average-label")
 								.style("text-anchor", "middle");
 
 							/* Little maps */
@@ -587,6 +611,24 @@ function init() {
 									//.attr("height", (d) => histoScale(d))
 									//.attr("transform", (d) => `translate(0, -${histoScale(d) - 14})`);
 							}
+
+							function scaleLegendCells(){
+								const breaks = [devLinearScale.domain()[0]].concat(devscale.domain());
+								d3.selectAll(".cell").data(breaks)
+									.transition().duration(2000)
+									.attr("transform", (d) => `translate(${devLinearScale(d)},0)`);
+								d3.selectAll(".cell rect")
+									.attr("width", (d, i) => {
+										if(i < breaks.lenght){
+											return devLinearScale(breaks[i + 1]) - devLinearScale(d);
+										}
+										else{return width - devLinearScale(d);}
+									})
+								d3.selectAll(".cell text").style("opacity", 0);
+								d3.select("#average-label").transition().duration(2000)
+									.attr("x", devLinearScale(100))
+							}
+
 
 							function getRegionFrequencies(property, thresholds){
 								let histo = d3.histogram()
