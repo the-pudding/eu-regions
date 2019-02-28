@@ -187,6 +187,7 @@ function init() {
 									othercaps.style("opacity", 1);
 									graticule.style("opacity", 1);
 									d3.select(".y-axis").style("opacity", 0);
+									scaleLegendCellsMap();
 									eucaps.transition().delay(1000).duration(2000)
 										.attr("cx", (d) => projection(d.geometry.coordinates)[0])
 										.attr("cy", (d) => projection(d.geometry.coordinates)[1]);
@@ -251,7 +252,6 @@ function init() {
 									dehighlightRegions("mapone");
 									devLinearScale.domain([20, 260])
 									scaleLegendCells();
-									console.log(devLinearScale(600));
 									d3.select("#arrow").transition().duration(2000)
 										.attr("transform", `translate(${devLinearScale(610) - 40}, ${countryScale("UK") - 40})`)
 									regions.transition().duration(2000)
@@ -270,6 +270,11 @@ function init() {
 								}
 								if(step.index == 7 && step.direction == "up"){
 									devLinearScale.domain([margin.left, d3.max(geojsonNUTS2.features, (d) => 	+d.properties.gdppps16)]);
+									scaleLegendCells();
+									d3.select("#arrow").transition().duration(2000)
+										.attr("transform", `translate(${devLinearScale(610) - 40}, ${countryScale("UK") - 40})`);
+									d3.select("#average").transition().duration(2000)
+										.attr("transform", `translate(${devLinearScale(100)}, 0)`);
 									regions.transition().duration(2000)
 										.attrTween("d", function(d){
 											return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), 	countryScale	(d.properties.CNTR_CODE), 6);
@@ -624,9 +629,21 @@ function init() {
 										}
 										else{return width - devLinearScale(d);}
 									})
-								d3.selectAll(".cell text").style("opacity", 0);
+								d3.selectAll(".cell text").transition().duration(2000).style("opacity", 0);
 								d3.select("#average-label").transition().duration(2000)
 									.attr("x", devLinearScale(100))
+							}
+
+							function scaleLegendCellsMap(){
+								d3.selectAll(".cell")
+									.transition().duration(2000)
+									.attr("transform", (d,i) => `translate(${i * width/6},0)`);
+								d3.selectAll(".cell rect")
+									.transition().duration(2000)
+									.attr("width", width/6)
+								d3.selectAll(".cell text").transition().duration(2000).style("opacity", 1);
+								d3.select("#average-label").transition().duration(2000)
+									.attr("x", width/2)
 							}
 
 
