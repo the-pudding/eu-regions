@@ -64,7 +64,7 @@ function init() {
 									histogrammifyLegend(countrycounts, devscale.range())
 								}
 
-								if(step.index == 5 && step.direction == "down"){
+								/*if(step.index == 5 && step.direction == "down"){
 									regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
 
 									histogrammifyLegend(getRegionFrequencies("totalpayments0716", absfundScale.domain()), 	absfundScale.range());
@@ -79,7 +79,7 @@ function init() {
 
 									histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 									d3.select(".label-outside").style("opacity", 1);
-								}
+								}*/
 
 								/*if(step.index == 5 && step.direction == "down"){
 									let poland = geojsonNUTS0.features.filter(country => country.id == "PL")[0];
@@ -89,7 +89,7 @@ function init() {
 										.attr("d", zoomedGeoPath);
 								}*/
 
-								if(step.index == 6 && step.direction == "down"){
+								/*if(step.index == 6 && step.direction == "down"){
 									regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
 
 									histogrammifyLegend(getRegionFrequencies("totalpercapita0716", percapitafundScale.domain())	, absfundScale.range());
@@ -132,9 +132,9 @@ function init() {
 									histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), 	fundpercgdpScale.range());
 									d3.selectAll(".cell text.label").data(fundpercgdpScale.labels)
 										.text((d) => (d));
-								}
+								}*/
 
-								if(step.index == 9 && step.direction == "down"){
+								if(step.index == 5 && step.direction == "down"){
 									//chorolegend.style("opacity", 0);
 									landsilhouette.style("opacity", 0.3);
 									othercaps.style("opacity", 0);
@@ -167,7 +167,7 @@ function init() {
 										.attr("class", "y-axis")
 										.call(yAxis).lower();
 								}
-								if(step.index == 8 && step.direction == "up"){
+								if(step.index == 4 && step.direction == "up"){
 									countries.style("opacity", 1)
 										.style("fill-opacity", 0);
 									//chorolegend.style("opacity", 1);
@@ -193,7 +193,7 @@ function init() {
 										});							
 								}
 
-								if(step.index == 10 && step.direction == "down"){
+								if(step.index == 6 && step.direction == "down"){
 									let average = mapOne.append("g")
 										.attr("id", "average")
 										.attr("transform", `translate(${devLinearScale(100)}, 0)`);
@@ -211,18 +211,18 @@ function init() {
 										.style("text-anchor", "middle")
 										.style("fill", "#000000");
 								}
-								if(step.index == 9 && step.direction == "up"){
+								if(step.index == 5 && step.direction == "up"){
 									d3.select("#average").remove();
 								}
 
-								if(step.index == 11 && step.direction == "down"){
+								if(step.index == 7 && step.direction == "down"){
 									highlightRegions("mapone", ["UKI3"])
 								}
-								if(step.index == 10 && step.direction == "up"){
+								if(step.index == 6 && step.direction == "up"){
 									dehighlightRegions("mapone")
 								}
 
-								if(step.index == 12 && step.direction == "down"){
+								if(step.index == 8 && step.direction == "down"){
 									dehighlightRegions("mapone");
 									devLinearScale.domain([20, 260])
 									regions.transition().duration(2000)
@@ -239,7 +239,7 @@ function init() {
 									eucaps.transition().duration(2000)
 										.attr("cx", (d) => devLinearScale(+d.properties.gdppps16));
 								}
-								if(step.index == 11 && step.direction == "up"){
+								if(step.index == 7 && step.direction == "up"){
 									devLinearScale.domain([margin.left, d3.max(geojsonNUTS2.features, (d) => 	+d.properties.gdppps16)]);
 									regions.transition().duration(2000)
 										.attrTween("d", function(d){
@@ -254,7 +254,7 @@ function init() {
 								}
 
 								//Add lines for thresholds
-								if(step.index == 13 && step.direction == "down"){
+								if(step.index == 9 && step.direction == "down"){
 									let threshold75 = mapOne.append("g")
 										.attr("id", "threshold75")
 										.attr("transform", `translate(${devLinearScale(75)}, 0)`);
@@ -289,15 +289,15 @@ function init() {
 										.style("text-anchor", "middle")
 										.style("fill", devscale(89));
 								}
-								if(step.index == 12 && step.direction == "up"){
+								if(step.index == 8 && step.direction == "up"){
 									d3.select("#threshold75").remove();
 									d3.select("#threshold90").remove();
 								}
 
-								if(step.index == 14 && step.direction == "down"){
+								if(step.index == 10 && step.direction == "down"){
 									highlightRegions("mapone", ["LT00", "HU10", "PL12"]);
 								}
-								if(step.index == 13 && step.direction == "up"){
+								if(step.index == 9 && step.direction == "up"){
 									dehighlightRegions("mapone");
 								}
 							}
@@ -630,8 +630,8 @@ function init() {
 									.style("opacity", 0.1)
 								regioncodes.forEach(function(region){
 									d3.select(`#${mapid} .region#` + region)
-										.style("opacity", 1)
-										.style("filter", "url(#shadow)")
+										.style("opacity", 1);
+										//.style("filter", "url(#shadow)")
 								});
 							}
 
