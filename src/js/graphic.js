@@ -33,6 +33,38 @@ function init() {
 	let path = d3.geoPath()
 		.projection(projection);
 	
+	const emojiflags = {
+		"LU": "🇱🇺",
+		"IE": "🇮🇪",
+		"NL": "🇳🇱",
+		"AT": "🇦🇹",
+		"DE": "🇩🇪",
+		"DK": "🇩🇰",
+		"SE": "🇸🇪",
+		"BE": "🇧🇪",
+		"FI": "🇫🇮",
+		"UK": "🇬🇧",
+		"FR": "🇫🇷",
+		"IT": "🇮🇹",
+		"MT": "🇲🇹",
+		"ES": "🇪🇸",
+		"CZ": "🇨🇿",
+		"CY": "🇨🇾",
+		"SI": "🇸🇮",
+		"PT": "🇵🇹",
+		"SK": "🇸🇰",
+		"EE": "🇪🇪",
+		"LT": "🇱🇹",
+		"EL": "🇬🇷",
+		"PL": "🇵🇱",
+		"HU": "🇭🇺",
+		"LV": "🇱🇻",
+		"HR": "🇭🇷",
+		"RO": "🇷🇴",
+		"BG": "🇧🇬"
+	}
+	const capitalRegions = ["AT13","BE10","BG41","CY00","CZ01","DE30","EL30","DK01","EE00","ES30","FR10","HR04","HU10","IE02","LU00","LV00","NL32","ITI4","LT00","PL12","PT17","SI04","SK01","RO32","SE11","UKI3"];
+	
 	d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered_merged.json", function(nuts2) {
 		d3.json("assets/data/NUTS_RG_20M_2016_4326_LEVL_2_filtered_merged.json", function(nuts2_16) {
 			d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0_filtered_merged.json", function(nuts0) {
@@ -57,18 +89,15 @@ function init() {
 							.onStepEnter(handleStepEnter);
 
 							//TODO: add functions to steps based on data attributes, not on indices
-							//TODO: interrupt animations when scroll to new step?
-							//TODO: update legend labels
 							function handleStepEnter(step){
 								d3.selectAll(".step").classed("is-active", false);
 								d3.select(step.element).classed("is-active", true);
 
-								if(step.index == 2 && step.direction == "down"){
+								if(step.index == 1 && step.direction == "down"){
 									countries.style("fill-opacity", 0);
-
 									histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 								}
-								if(step.index == 1 && step.direction == "up"){
+								if(step.index == 0 && step.direction == "up"){
 									countries.style("fill-opacity", 1);
 
 									let countrycounts = [7, 7, 6, 4, 4];
@@ -145,7 +174,7 @@ function init() {
 										.text((d) => (d));
 								}*/
 
-								if(step.index == 5 && step.direction == "down"){
+								if(step.index == 4 && step.direction == "down"){
 									//chorolegend.style("opacity", 0);
 									scaleLegendCells();
 									landsilhouette.style("opacity", 0.3);
@@ -175,11 +204,13 @@ function init() {
 										.tickSize(-width);
 
 									mapOne.append("g")
-										.attr("transform", "translate(30, 0)")
+										.attr("transform", "translate(40, 0)")
 										.attr("class", "y-axis")
 										.call(yAxis).lower();
+									d3.selectAll(".y-axis .tick text")
+										.text(function(){ return emojiflags[d3.select(this).text()]; });
 								}
-								if(step.index == 4 && step.direction == "up"){
+								if(step.index == 3 && step.direction == "up"){
 									countries.style("opacity", 1)
 										.style("fill-opacity", 0);
 									//chorolegend.style("opacity", 1);
@@ -206,7 +237,7 @@ function init() {
 										});							
 								}
 
-								if(step.index == 6 && step.direction == "down"){
+								if(step.index == 5 && step.direction == "down"){
 									let average = mapOne.insert("g", "path.region")
 										.attr("id", "average")
 										.attr("transform", `translate(${devLinearScale(100)}, 0)`);
@@ -225,11 +256,11 @@ function init() {
 										.style("fill", "#000000")
 										.attr("class", "label-outside tk-atlas");
 								}
-								if(step.index == 5 && step.direction == "up"){
+								if(step.index == 4 && step.direction == "up"){
 									d3.select("#average").remove();
 								}
 
-								if(step.index == 7 && step.direction == "down"){
+								if(step.index == 6 && step.direction == "down"){
 									highlightRegions("mapone", ["UKI3"])
 									let arrow  = mapOne.append("g")
 										.attr("id", "arrow")
@@ -243,12 +274,12 @@ function init() {
             							.attr("stroke", "black")
             							.attr("marker-end", "url(#triangle)");
 								}
-								if(step.index == 6 && step.direction == "up"){
+								if(step.index == 5 && step.direction == "up"){
 									dehighlightRegions("mapone");
 									d3.select("#arrow").remove();
 								}
 
-								if(step.index == 8 && step.direction == "down"){
+								if(step.index == 7 && step.direction == "down"){
 									dehighlightRegions("mapone");
 									devLinearScale.domain([20, 260])
 									scaleLegendCells();
@@ -268,7 +299,7 @@ function init() {
 									eucaps.transition().duration(2000)
 										.attr("cx", (d) => devLinearScale(+d.properties.gdppps16));
 								}
-								if(step.index == 7 && step.direction == "up"){
+								if(step.index == 6 && step.direction == "up"){
 									devLinearScale.domain([margin.left, d3.max(geojsonNUTS2.features, (d) => 	+d.properties.gdppps16)]);
 									scaleLegendCells();
 									d3.select("#arrow").transition().duration(2000)
@@ -288,8 +319,8 @@ function init() {
 								}
 
 								//Add lines for thresholds
-								if(step.index == 9 && step.direction == "down"){
-									let threshold75 = mapOne.insert("g", "path.country")
+								if(step.index == 8 && step.direction == "down"){
+									let threshold75 = mapOne.insert("g", "path.region")
 										.attr("id", "threshold75")
 										.attr("transform", `translate(${devLinearScale(75)}, 0)`);
 									threshold75.append('line')
@@ -307,7 +338,7 @@ function init() {
 										.style("fill", devscale(74))
 										.attr("class", "label-outside tk-atlas");
 
-									let threshold90 = mapOne.insert("g", "path.country")
+									let threshold90 = mapOne.insert("g", "path.region")
 										.attr("id", "threshold90")
 										.attr("transform", `translate(${devLinearScale(90)}, 0)`);
 									threshold90.append('line')
@@ -325,16 +356,52 @@ function init() {
 										.style("fill", devscale(89))
 										.attr("class", "label-outside tk-atlas");
 								}
-								if(step.index == 8 && step.direction == "up"){
+								if(step.index == 7 && step.direction == "up"){
 									d3.select("#threshold75").remove();
 									d3.select("#threshold90").remove();
 								}
 
-								if(step.index == 10 && step.direction == "down"){
+								if(step.index == 9 && step.direction == "down"){
 									highlightRegions("mapone", ["LT00", "HU10", "PL12"]);
+									let arrowLithuania  = mapOne.append("g")
+										.attr("class", "region-arrow")
+										.attr("transform", `translate(${devLinearScale(75) - 60}, ${countryScale("LT")})`)
+									arrowLithuania.append("line")
+            							.attr("x1", 0)
+            							.attr("y1", 0)
+            							.attr("x2", 40)
+            							.attr("y2", 0)
+            							.attr("stroke-width", 2)
+            							.attr("stroke", "black")
+										.attr("marker-end", "url(#triangle)");
+										
+									let arrowBudapest  = mapOne.append("g")
+										.attr("class", "region-arrow")
+										.attr("transform", `translate(${devLinearScale(105) + 5}, ${countryScale("HU") + 5})`)
+									arrowBudapest.append("line")
+            							.attr("x1", 40)
+            							.attr("y1", 20)
+            							.attr("x2", 0)
+            							.attr("y2", 0)
+            							.attr("stroke-width", 2)
+            							.attr("stroke", "black")
+										.attr("marker-end", "url(#triangle)");
+										
+									let arrowWarsaw  = mapOne.append("g")
+										.attr("class", "region-arrow")
+										.attr("transform", `translate(${devLinearScale(114)}, ${countryScale("PL") - 24})`)
+									arrowWarsaw.append("line")
+            							.attr("x1", 40)
+            							.attr("y1", 0)
+            							.attr("x2", 0)
+            							.attr("y2", 20)
+            							.attr("stroke-width", 2)
+            							.attr("stroke", "black")
+            							.attr("marker-end", "url(#triangle)");
 								}
-								if(step.index == 9 && step.direction == "up"){
+								if(step.index == 8 && step.direction == "up"){
 									dehighlightRegions("mapone");
+									d3.selectAll(".region-arrow").remove();
 								}
 							}
 
@@ -598,8 +665,8 @@ function init() {
 
 							makeSmallmap("lithuania13", "LT", 2013);
 							makeSmallmap("lithuania16", "LT", 2016);
-							makeSmallmap("hungary13", "HU", 2013);
-							makeSmallmap("hungary16", "HU", 2016);
+							//makeSmallmap("hungary13", "HU", 2013);
+							//makeSmallmap("hungary16", "HU", 2016);
 							makeSmallmap("poland13", "PL", 2013);
 							makeSmallmap("poland16", "PL", 2016);
 
@@ -680,7 +747,7 @@ function init() {
 							//Region highlighting
 							function getRegionsByThresholds(thlow, thhigh, measure){
 								return geojsonNUTS2.features.filter(function(region){
-									return region.properties[measure] <= +thhigh && region.properties[measure] > +thlow;
+									return region.properties[measure] < +thhigh && region.properties[measure] >= +thlow;
 								}).map((region) => region.properties.NUTS_ID);
 							}
 
@@ -718,6 +785,15 @@ function init() {
 								}).on("mouseout", function(){
 									dehighlightRegions("mapone");
 								});	
+							
+							//Highlight regions containing the country capital
+							d3.selectAll(".highlight.capital-regions")
+								.on("mouseover", function(){
+									console.log("yes");
+									highlightRegions("mapone", capitalRegions);
+								}).on("mouseout", function(){
+									dehighlightRegions("mapone");
+								});
 						})
 					})
 				})
