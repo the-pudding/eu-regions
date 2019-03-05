@@ -94,11 +94,15 @@ function init() {
 								d3.select(step.element).classed("is-active", true);
 
 								if(step.index == 1 && step.direction == "down"){
-									countries.style("fill-opacity", 0);
+									countries.transition().duration(1000)
+										.delay((d, i) => i*100)
+										.style("fill-opacity", 0);
 									histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 								}
 								if(step.index == 0 && step.direction == "up"){
-									countries.style("fill-opacity", 1);
+									countries.transition().duration(1000)
+										.delay((d, i) => i*100)
+										.style("fill-opacity", 1);
 
 									let countrycounts = [7, 7, 6, 4, 4];
 									histogrammifyLegend(countrycounts, devscale.range())
