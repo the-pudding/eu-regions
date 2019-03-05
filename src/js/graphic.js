@@ -34,7 +34,7 @@ function init() {
 		.projection(projection);
 	
 	const emojiflags = {
-		"LU": "<tspan class='countryname'>Luxembourg </tspan> 🇱🇺",
+		"LU": "<tspan class='countryname'>Luxembourg </tspan>🇱🇺",
 		"IE": "<tspan class='countryname'>Ireland </tspan>🇮🇪",
 		"NL": "<tspan class='countryname'>Netherlands </tspan>🇳🇱",
 		"AT": "<tspan class='countryname'>Austria </tspan>🇦🇹",
@@ -212,17 +212,20 @@ function init() {
 										.attr("class", "y-axis")
 										.call(yAxis).lower();
 									d3.selectAll(".y-axis .tick text")
-										//.text(function(){ return emojiflags[d3.select(this).text()]; });
-										.html(function(){ return emojiflags[d3.select(this).text()]});
+										.html(function(){ return emojiflags[d3.select(this).text()]})
+										.style("opacity", 0).transition().delay(3000).duration(7000)
+											.style("opacity", 1);
 								}
 								if(step.index == 3 && step.direction == "up"){
+
+									d3.selectAll(".y-axis").transition().duration(2000)
+										.style("opacity", 0);
 									countries.style("opacity", 1)
 										.style("fill-opacity", 0);
 									//chorolegend.style("opacity", 1);
 									landsilhouette.style("opacity", 1);
 									othercaps.style("opacity", 1);
 									graticule.style("opacity", 1);
-									d3.select(".y-axis").style("opacity", 0);
 									scaleLegendCellsMap();
 									eucaps.transition().delay(1000).duration(2000)
 										.attr("cx", (d) => projection(d.geometry.coordinates)[0])
