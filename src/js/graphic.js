@@ -34,34 +34,34 @@ function init() {
 		.projection(projection);
 	
 	const emojiflags = {
-		"LU": "🇱🇺",
-		"IE": "🇮🇪",
-		"NL": "🇳🇱",
-		"AT": "🇦🇹",
-		"DE": "🇩🇪",
-		"DK": "🇩🇰",
-		"SE": "🇸🇪",
-		"BE": "🇧🇪",
-		"FI": "🇫🇮",
-		"UK": "🇬🇧",
-		"FR": "🇫🇷",
-		"IT": "🇮🇹",
-		"MT": "🇲🇹",
-		"ES": "🇪🇸",
-		"CZ": "🇨🇿",
-		"CY": "🇨🇾",
-		"SI": "🇸🇮",
-		"PT": "🇵🇹",
-		"SK": "🇸🇰",
-		"EE": "🇪🇪",
-		"LT": "🇱🇹",
-		"EL": "🇬🇷",
-		"PL": "🇵🇱",
-		"HU": "🇭🇺",
-		"LV": "🇱🇻",
-		"HR": "🇭🇷",
-		"RO": "🇷🇴",
-		"BG": "🇧🇬"
+		"LU": "<tspan class='countryname'>Luxembourg </tspan> 🇱🇺",
+		"IE": "<tspan class='countryname'>Ireland </tspan>🇮🇪",
+		"NL": "<tspan class='countryname'>Netherlands </tspan>🇳🇱",
+		"AT": "<tspan class='countryname'>Austria </tspan>🇦🇹",
+		"DE": "<tspan class='countryname'>Germany </tspan>🇩🇪",
+		"DK": "<tspan class='countryname'>Denmark </tspan>🇩🇰",
+		"SE": "<tspan class='countryname'>Sweden </tspan>🇸🇪",
+		"BE": "<tspan class='countryname'>Belgium </tspan>🇧🇪",
+		"FI": "<tspan class='countryname'>Finland </tspan>🇫🇮",
+		"UK": "<tspan class='countryname'>UK </tspan>🇬🇧",
+		"FR": "<tspan class='countryname'>France </tspan>🇫🇷",
+		"IT": "<tspan class='countryname'>Italy </tspan>🇮🇹",
+		"MT": "<tspan class='countryname'>Poland </tspan>🇲🇹",
+		"ES": "<tspan class='countryname'>Spain </tspan>🇪🇸",
+		"CZ": "<tspan class='countryname'>Czechia </tspan>🇨🇿",
+		"CY": "<tspan class='countryname'>Cyprus </tspan>🇨🇾",
+		"SI": "<tspan class='countryname'>Slovenia </tspan>🇸🇮",
+		"PT": "<tspan class='countryname'>Portugal </tspan>🇵🇹",
+		"SK": "<tspan class='countryname'>Slovakia </tspan>🇸🇰",
+		"EE": "<tspan class='countryname'>Estonia </tspan>🇪🇪",
+		"LT": "<tspan class='countryname'>Lithuania </tspan>🇱🇹",
+		"EL": "<tspan class='countryname'>Greece </tspan>🇬🇷",
+		"PL": "<tspan class='countryname'>Poland </tspan>🇵🇱",
+		"HU": "<tspan class='countryname'>Hungary </tspan>🇭🇺",
+		"LV": "<tspan class='countryname'>Latvia </tspan>🇱🇻",
+		"HR": "<tspan class='countryname'>Croatia </tspan>🇭🇷",
+		"RO": "<tspan class='countryname'>Romania </tspan>🇷🇴",
+		"BG": "<tspan class='countryname'>Bulagaria </tspan>🇧🇬"
 	}
 	const capitalRegions = ["AT13","BE10","BG41","CY00","CZ01","DE30","EL30","DK01","EE00","ES30","FR10","HR04","HU10","IE02","LU00","LV00","NL32","ITI4","LT00","PL12","PT17","SI04","SK01","RO32","SE11","UKI3"];
 	
@@ -204,11 +204,12 @@ function init() {
 										.tickSize(-width);
 
 									mapOne.append("g")
-										.attr("transform", "translate(40, 0)")
+										.attr("transform", `translate(${margin.left}, 0)`)
 										.attr("class", "y-axis")
 										.call(yAxis).lower();
 									d3.selectAll(".y-axis .tick text")
-										.text(function(){ return emojiflags[d3.select(this).text()]; });
+										//.text(function(){ return emojiflags[d3.select(this).text()]; });
+										.html(function(){ return emojiflags[d3.select(this).text()]});
 								}
 								if(step.index == 3 && step.direction == "up"){
 									countries.style("opacity", 1)
@@ -435,7 +436,7 @@ function init() {
 
 							let countrycodes = geojsonNUTS0.features.map((country) => country.properties.CNTR_CODE);
 
-							const margin = {"top": 40, "left": 40, "bottom": 50, "right": 20};
+							const margin = {"top": 40, "left": 120, "bottom": 50, "right": 20};
 							const mapPadding = 10;
 
 							//Scales for the dotplot
