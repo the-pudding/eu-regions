@@ -311,7 +311,7 @@ function init() {
 									arrow.append("text")
 										.attr("x", 0)
 										.attr("y", -6)
-										.text("Inner London")
+										.text("Inner London - West")
 										.style("text-anchor", "middle")
 										.attr("class", "tk-atlas annotation");
 								}
@@ -489,10 +489,10 @@ function init() {
             							.attr("stroke", "black")
 										.attr("marker-end", "url(#triangle)");
 									arrowBudapest.append("text")
-										.attr("x", 0)
+										.attr("x", 40)
 										.attr("y", 35)
 										.text("Budapest")
-										.style("text-anchor", "middle")
+										.style("text-anchor", "start")
 										.attr("class", "tk-atlas annotation");
 										
 									let arrowWarsaw  = mapOne.append("g")
@@ -507,10 +507,10 @@ function init() {
             							.attr("stroke", "black")
 										.attr("marker-end", "url(#triangle)");
 									arrowWarsaw.append("text")
-										.attr("x", 0)
+										.attr("x", 40)
 										.attr("y", -6)
 										.text("Warsaw")
-										.style("text-anchor", "middle")
+										.style("text-anchor", "start")
 										.attr("class", "tk-atlas annotation");
 								}
 								if(step.index == 8 && step.direction == "up"){
@@ -521,7 +521,10 @@ function init() {
 
 							const devscale = d3.scaleThreshold()
 								.domain([75, 90, 100, 110, 125])
-								.range(["#009B9E","#42B7B9","#A7D3D4","#E4C1D9","#D691C1","#C75DAB"].reverse());
+								//.range(["#009B9E","#42B7B9","#A7D3D4","#E4C1D9","#D691C1","#C75DAB"].reverse());
+								//.range(["#C36969", "#DEAD97", "#F2DCBB", "#EFF3D3", "#9AB4C0", "#5E8393"]) //NYT https://www.nytimes.com/2018/10/01/upshot/maps-neighborhoods-shape-child-poverty.html
+								//.range(['#d73027','#fc8d59','#fee090','#e0f3f8','#91bfdb','#4575b4']) //Colorbrewer RdYlBl
+								.range(['#c51b7d','#e9a3c9','#fde0ef','#e6f5d0','#a1d76a','#4d9221']) //Colorbrewer PiYG
 							devscale.labels = ["less developed", "", "", "", "", "more developed"];
 
 							const absfundScale = d3.scaleThreshold()
