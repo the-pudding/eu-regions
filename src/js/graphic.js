@@ -88,6 +88,11 @@ function init() {
 							})
 							.onStepEnter(handleStepEnter);
 
+							//Tooltip
+							let tooltip = d3.select("body").append("div")	
+    							.attr("class", "tooltip")				
+    							.style("opacity", 0.9);
+
 							//TODO: add functions to steps based on data attributes, not on indices
 							function handleStepEnter(step){
 								d3.selectAll(".step").classed("is-active", false);
@@ -96,10 +101,13 @@ function init() {
 								if(step.index == 1 && step.direction == "down"){
 									countries.transition().duration(1000)
 										.delay((d, i) => i*100)
-										.style("fill-opacity", 0);
+										.style("fill-opacity", 0)
+										.style("pointer-events", "none");
+									title.text("EU regions, by economic development")
 									histogrammifyLegend(getRegionFrequencies("gdppps16", devscale.domain()), devscale.range());
 								}
 								if(step.index == 0 && step.direction == "up"){
+									title.text("EU countries, by economic development")
 									countries.transition().duration(1000)
 										.delay((d, i) => i*100)
 										.style("fill-opacity", 1);
@@ -181,9 +189,9 @@ function init() {
 								if(step.index == 4 && step.direction == "down"){
 									//chorolegend.style("opacity", 0);
 									scaleLegendCells();
-									landsilhouette.style("opacity", 0.3);
-									othercaps.style("opacity", 0);
-									graticule.style("opacity", 0);
+									landsilhouette.transition().duration(2000).style("opacity", 0);
+									othercaps.transition().duration(2000).style("opacity", 0);
+									graticule.transition().duration(2000).style("opacity", 0);
 
 									eucaps.transition()
 										.delay((d,i) => 1000 + 100*i)
@@ -192,16 +200,26 @@ function init() {
 										.attr("cy", (d) => countryScale(d.properties.CNTR_CODE));
 
 									countries.transition().duration(2000)
-										.style("stroke", "#333333")
 										.delay((d, i) => i*200)
 										.attrTween("d", function(d){
-											return toRect(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16) - 	6, countryScale(d.properties.CNTR_CODE) - 6, 12, 12);
+											return toRect(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16) - 6, countryScale(d.properties.CNTR_CODE) - 6, 12, 12);
 										});
 
-									regions.transition().duration(2000)
-										.delay((d, i) => i*20)
-										.attrTween("d", function(d){
-											return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), 	countryScale(d.properties.CNTR_CODE), 6);
+									regions
+										.on("mouseover", function(d){
+											tooltip.transition()		
+												.duration(200)		
+												.style("opacity", 1)
+												.style("background", devscale(+d.properties.gdppps16));		
+											tooltip.html(d.properties.NUTS_NAME + "<br/>" + d.properties.gdppps16)
+												.style("left", (d3.event.pageX + 10) + "px")		
+												.style("top", (d3.event.pageY - 28) + "px");
+											highlightRegions([d.properties.NUTS_ID])
+										})
+										.transition().duration(2000)
+											.delay((d, i) => i*20)
+											.attrTween("d", function(d){
+												return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps16), 	countryScale(d.properties.CNTR_CODE), 6);
 										});
 
 									let yAxis = d3.axisLeft(countryScale)
@@ -223,21 +241,30 @@ function init() {
 									countries.style("opacity", 1)
 										.style("fill-opacity", 0);
 									//chorolegend.style("opacity", 1);
-									landsilhouette.style("opacity", 1);
-									othercaps.style("opacity", 1);
-									graticule.style("opacity", 1);
+									landsilhouette.transition().duration(2000).style("opacity", 1);
+									othercaps.transition().duration(2000).style("opacity", 1);
+									graticule.transition().duration(2000).style("opacity", 1);
 									scaleLegendCellsMap();
 									eucaps.transition().delay(1000).duration(2000)
 										.attr("cx", (d) => projection(d.geometry.coordinates)[0])
 										.attr("cy", (d) => projection(d.geometry.coordinates)[1]);
 									countries
 										.transition().duration(2000)
-										.style("stroke", "#ffffff")
 										.delay((d, i) => i*200)
 										.attrTween("d", function(d){
 											return fromRect(devLinearScale(+d.properties.gdppps16), countryScale	(d.properties.CNTR_CODE), 6, 6, path(d.geometry));
 										});	
 									regions
+										.on("mouseover", function(d){
+											tooltip.transition()		
+												.duration(200)		
+												.style("opacity", 1)
+												.style("background", devscale(+d.properties.gdppps16));		
+											tooltip.html(d.properties.NUTS_NAME)
+												.style("left", (d3.event.pageX + 10) + "px")		
+												.style("top", (d3.event.pageY - 28) + "px");
+											highlightRegions([d.properties.NUTS_ID])
+										})
 										.transition().duration(2000)
 										.delay((d, i) => i*20)
 										.attrTween("d", function(d){
@@ -269,7 +296,7 @@ function init() {
 								}
 
 								if(step.index == 6 && step.direction == "down"){
-									highlightRegions("mapone", ["UKI3"])
+									highlightRegions(["UKI3"])
 									let arrow  = mapOne.append("g")
 										.attr("id", "arrow")
 										.attr("transform", `translate(${devLinearScale(610) - 40}, ${countryScale("UK") - 40})`)
@@ -280,15 +307,21 @@ function init() {
             							.attr("y2", 30)
             							.attr("stroke-width", 2)
             							.attr("stroke", "black")
-            							.attr("marker-end", "url(#triangle)");
+										.attr("marker-end", "url(#triangle)");
+									arrow.append("text")
+										.attr("x", 0)
+										.attr("y", -6)
+										.text("Inner London")
+										.style("text-anchor", "middle")
+										.attr("class", "tk-atlas annotation");
 								}
 								if(step.index == 5 && step.direction == "up"){
-									dehighlightRegions("mapone");
+									dehighlightRegions();
 									d3.select("#arrow").remove();
 								}
 
 								if(step.index == 7 && step.direction == "down"){
-									dehighlightRegions("mapone");
+									dehighlightRegions();
 									devLinearScale.domain([20, 260])
 									scaleLegendCells();
 									d3.select("#arrow").transition().duration(2000)
@@ -308,7 +341,7 @@ function init() {
 										.attr("cx", (d) => devLinearScale(+d.properties.gdppps16));
 								}
 								if(step.index == 6 && step.direction == "up"){
-									devLinearScale.domain([margin.left, d3.max(geojsonNUTS2.features, (d) => 	+d.properties.gdppps16)]);
+									devLinearScale.domain([20, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps16)]);
 									scaleLegendCells();
 									d3.select("#arrow").transition().duration(2000)
 										.attr("transform", `translate(${devLinearScale(610) - 40}, ${countryScale("UK") - 40})`);
@@ -334,7 +367,7 @@ function init() {
 									threshold75.append('line')
 										.attr("x1", 0)
 										.attr("x2", 0)
-										.attr("y1", margin.top)
+										.attr("y1", height - margin.bottom)
 										.attr("y2", height - 32)
 										.style("stroke-width", 1)
 										.style("stroke", devscale(74));
@@ -345,6 +378,13 @@ function init() {
 										.style("text-anchor", "middle")
 										.style("fill", devscale(74))
 										.attr("class", "label-outside tk-atlas");
+									threshold75.append("rect")
+										.attr("x", -(devLinearScale(75) - devLinearScale(20)))
+										.attr("y", legendy + legendHeight)
+										.attr("width", devLinearScale(75) - devLinearScale(20))
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.style("fill", devscale(74))
+										.style("opacity", 0.1);
 
 									let threshold90 = mapOne.insert("g", "path.region")
 										.attr("id", "threshold90")
@@ -352,7 +392,7 @@ function init() {
 									threshold90.append('line')
 										.attr("x1", 0)
 										.attr("x2", 0)
-										.attr("y1", margin.top)
+										.attr("y1", height - margin.bottom)
 										.attr("y2", height - 32)
 										.style("stroke-width", 1)
 										.style("stroke", devscale(89));
@@ -363,14 +403,62 @@ function init() {
 										.style("text-anchor", "middle")
 										.style("fill", devscale(89))
 										.attr("class", "label-outside tk-atlas");
+									threshold90.append("rect")
+										.attr("x", -(devLinearScale(90) - devLinearScale(75)))
+										.attr("y", legendy + legendHeight)
+										.attr("width", devLinearScale(90) - devLinearScale(75))
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.style("fill", devscale(89))
+										.style("opacity", 0.1);
+									mapOne.insert("rect", "path.region")
+										.attr("id", "threshold100")
+										.attr("x", devLinearScale(100) - (devLinearScale(100) - devLinearScale(90)))
+										.attr("y", legendy + legendHeight)
+										.attr("height", height - margin.top - margin.bottom)
+										.attr("width", devLinearScale(100) - devLinearScale(90))
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.style("fill", devscale(99))
+										.style("opacity", 0.1);
+									mapOne.insert("rect", "path.region")
+										.attr("id", "threshold110")
+										.attr("x", devLinearScale(110) - (devLinearScale(110) - devLinearScale(100)))
+										.attr("y", legendy + legendHeight)
+										.attr("height", height - margin.top - margin.bottom)
+										.attr("width", devLinearScale(110) - devLinearScale(100))
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.style("fill", devscale(109))
+										.style("opacity", 0.1);
+									mapOne.insert("rect", "path.region")
+										.attr("id", "threshold125")
+										.attr("x", devLinearScale(125) - (devLinearScale(125) - devLinearScale(110)))
+										.attr("y", legendy + legendHeight)
+										.attr("height", height - margin.top - margin.bottom)
+										.attr("width", devLinearScale(125) - devLinearScale(110))
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.style("fill", devscale(124))
+										.style("opacity", 0.1);
+									mapOne.insert("rect", "path.region")
+										.attr("id", "threshold600")
+										.attr("x", devLinearScale(600) - (devLinearScale(600) - devLinearScale(125)))
+										.attr("y", legendy + legendHeight)
+										.attr("height", height - margin.top - margin.bottom)
+										.attr("width", devLinearScale(600) - devLinearScale(125))
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.style("fill", devscale(126))
+										.style("opacity", 0.2);
+
 								}
 								if(step.index == 7 && step.direction == "up"){
 									d3.select("#threshold75").remove();
 									d3.select("#threshold90").remove();
+									d3.select("#threshold100").remove();
+									d3.select("#threshold110").remove();
+									d3.select("#threshold125").remove();
+									d3.select("#threshold600").remove();
 								}
 
 								if(step.index == 9 && step.direction == "down"){
-									highlightRegions("mapone", ["LT00", "HU10", "PL12"]);
+									highlightRegions(["LT00", "HU10", "PL12"]);
 									let arrowLithuania  = mapOne.append("g")
 										.attr("class", "region-arrow")
 										.attr("transform", `translate(${devLinearScale(75) - 60}, ${countryScale("LT")})`)
@@ -382,6 +470,12 @@ function init() {
             							.attr("stroke-width", 2)
             							.attr("stroke", "black")
 										.attr("marker-end", "url(#triangle)");
+									arrowLithuania.append("text")
+										.attr("x", 0)
+										.attr("y", -6)
+										.text("Lithuania")
+										.style("text-anchor", "middle")
+										.attr("class", "tk-atlas annotation");
 										
 									let arrowBudapest  = mapOne.append("g")
 										.attr("class", "region-arrow")
@@ -394,6 +488,12 @@ function init() {
             							.attr("stroke-width", 2)
             							.attr("stroke", "black")
 										.attr("marker-end", "url(#triangle)");
+									arrowBudapest.append("text")
+										.attr("x", 0)
+										.attr("y", 35)
+										.text("Budapest")
+										.style("text-anchor", "middle")
+										.attr("class", "tk-atlas annotation");
 										
 									let arrowWarsaw  = mapOne.append("g")
 										.attr("class", "region-arrow")
@@ -405,10 +505,16 @@ function init() {
             							.attr("y2", 20)
             							.attr("stroke-width", 2)
             							.attr("stroke", "black")
-            							.attr("marker-end", "url(#triangle)");
+										.attr("marker-end", "url(#triangle)");
+									arrowWarsaw.append("text")
+										.attr("x", 0)
+										.attr("y", -6)
+										.text("Warsaw")
+										.style("text-anchor", "middle")
+										.attr("class", "tk-atlas annotation");
 								}
 								if(step.index == 8 && step.direction == "up"){
-									dehighlightRegions("mapone");
+									dehighlightRegions();
 									d3.selectAll(".region-arrow").remove();
 								}
 							}
@@ -443,7 +549,7 @@ function init() {
 
 							let countrycodes = geojsonNUTS0.features.map((country) => country.properties.CNTR_CODE);
 
-							const margin = {"top": 40, "left": 120, "bottom": 50, "right": 20};
+							const margin = {"top": 70, "left": 120, "bottom": 50, "right": 20};
 							const mapPadding = 10;
 
 							//Scales for the dotplot
@@ -479,7 +585,23 @@ function init() {
 								.attr("class", (d) => `region ${d.properties.CNTR_CODE}`)
 								.attr("d", path)
 								.attr("id", (d) => d.id)
-								.style("fill", (d) => devscale(+d.properties.gdppps16));
+								.style("fill", (d) => devscale(+d.properties.gdppps16))
+								.on("mouseover", function(d){
+									tooltip.transition()		
+										.duration(200)		
+										.style("opacity", 1)
+										.style("background", devscale(+d.properties.gdppps16));		
+									tooltip.html(d.properties.NUTS_NAME)
+										.style("left", (d3.event.pageX + 10) + "px")		
+										.style("top", (d3.event.pageY - 28) + "px");
+									highlightRegions([d.properties.NUTS_ID])
+								})
+								.on("mouseout", function(d){
+									tooltip.transition()		
+										.duration(200)		
+										.style("opacity", 0);
+									dehighlightRegions();
+								});
 
 							let countries = mapOne.selectAll("path.country")
 								.data(geojsonNUTS0.features)
@@ -531,27 +653,36 @@ function init() {
 							histogrammifyLegend(countrycounts, devscale.range());
 
 							//Alternative legend
+							const legendy = 30;
+							const legendHeight = 10;
 							let chorolegendtop = mapOne.append("g")
 								.attr("class", "toplegend tk-atlas")
-								.attr("transform", "translate(0,0)");
+								.attr("transform", `translate(${margin.left},${legendy})`);
 							let legendtop = legendColor()
 								.orient("horizontal")
-								.shapeWidth(width/6)
+								.shapeWidth((width - margin.left)/6)
 								.labels(["less developed", "", "", "", "", "more developed"])
-								.labelOffset(-13)
+								.labelOffset(10)
 								.shapePadding(0)
-								.shapeHeight(20)
+								.shapeHeight(legendHeight)
 								.scale(devscale);
 							mapOne.select(".toplegend")
 								.call(legendtop);
 
 							mapOne.append("text")
-								.attr("x", width/2)
-								.attr("y", 28)
+								.attr("x", (width - margin.left)/2 + margin.left)
+								.attr("y", 58)
 								.text("average")
 								.attr("class", "tk-atlas label-outside")
 								.attr("id", "average-label")
 								.style("text-anchor", "middle");
+
+							let title = mapOne.append("text")
+								.attr("x", margin.left)
+								.attr("y", 20)
+								.attr("class", "tk-atlas")
+								.attr("id", "title")
+								.text("EU countries, by economic development")
 
 							/* Little maps */
 							let smallmapWidth = 400;
@@ -696,7 +827,7 @@ function init() {
 								const breaks = [devLinearScale.domain()[0]].concat(devscale.domain());
 								d3.selectAll(".cell").data(breaks)
 									.transition().duration(2000)
-									.attr("transform", (d) => `translate(${devLinearScale(d)},0)`);
+									.attr("transform", (d) => `translate(${devLinearScale(d) - margin.left},0)`);
 								d3.selectAll(".cell rect")
 									.attr("width", (d, i) => {
 										if(i < breaks.lenght){
@@ -712,13 +843,13 @@ function init() {
 							function scaleLegendCellsMap(){
 								d3.selectAll(".cell")
 									.transition().duration(2000)
-									.attr("transform", (d,i) => `translate(${i * width/6},0)`);
+									.attr("transform", (d,i) => `translate(${i * (width - margin.left)/6},0)`);
 								d3.selectAll(".cell rect")
 									.transition().duration(2000)
-									.attr("width", width/6)
+									.attr("width", (width - margin.left)/6)
 								d3.selectAll(".cell text").transition().duration(2000).style("opacity", 1);
 								d3.select("#average-label").transition().duration(2000)
-									.attr("x", width/2)
+									.attr("x", (width - margin.left)/2 + margin.left)
 							}
 
 
@@ -759,18 +890,18 @@ function init() {
 								}).map((region) => region.properties.NUTS_ID);
 							}
 
-							function highlightRegions(mapid, regioncodes){
-								d3.selectAll(`#${mapid} .region`)
+							function highlightRegions(regioncodes){
+								d3.selectAll(".region")
 									.style("opacity", 0.1)
 								regioncodes.forEach(function(region){
-									d3.select(`#${mapid} .region#` + region)
+									d3.select(`.region#` + region)
 										.style("opacity", 1);
 										//.style("filter", "url(#shadow)")
 								});
 							}
 
-							function dehighlightRegions(mapid){
-								d3.selectAll(`#${mapid} .region`)
+							function dehighlightRegions(){
+								d3.selectAll(".region")
 									.style("opacity", 1)
 									.style("filter", "none");							
 							}
@@ -778,9 +909,9 @@ function init() {
 							d3.selectAll(".highlight.region")
 								.on("mouseover", function(){
 									let regionCode = d3.select(this).attr("id");
-									highlightRegions("mapone", [regionCode]);
+									highlightRegions([regionCode]);
 								}).on("mouseout", function(){
-									dehighlightRegions("mapone");
+									dehighlightRegions();
 								});
 							
 							d3.selectAll(".textlegend")
@@ -789,18 +920,17 @@ function init() {
 									let thLow = d3.select(this).attr("data-th-low");
 									let measure = d3.select(this).attr("data-measure");
 									let regionsToHighlight = getRegionsByThresholds(thLow, thHigh, measure);
-									highlightRegions("mapone", regionsToHighlight);
+									highlightRegions(regionsToHighlight);
 								}).on("mouseout", function(){
-									dehighlightRegions("mapone");
+									dehighlightRegions();
 								});	
 							
 							//Highlight regions containing the country capital
 							d3.selectAll(".highlight.capital-regions")
 								.on("mouseover", function(){
-									console.log("yes");
-									highlightRegions("mapone", capitalRegions);
+									highlightRegions(capitalRegions);
 								}).on("mouseout", function(){
-									dehighlightRegions("mapone");
+									dehighlightRegions();
 								});
 						})
 					})

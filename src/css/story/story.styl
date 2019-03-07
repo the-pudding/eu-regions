@@ -39,7 +39,6 @@ fivepercgdp = #563C8F
 			align-self center
 			min-height 100vh
 			margin-bottom 1rem
-			transition background-color 500ms ease-in-out
 			&:last-of-type
 				margin-bottom 0
 			&.is-active p
@@ -47,6 +46,8 @@ fivepercgdp = #563C8F
 			p
 				margin 0
 				padding 1rem
+				transition background-color 250ms ease-in-out
+
 
 	figure.sticky
 		position sticky
@@ -73,31 +74,32 @@ fivepercgdp = #563C8F
 	fill: #f1f1f1;
 }
 
-.region {
-	stroke: #ffffff;
-	stroke-width: 0.5px;
+.region
+	stroke #ffffff
+	stroke-width 0.5px
 	transition fill 1000ms ease-in-out, opacity 250ms ease-in-out
-}
+	cursor pointer
 
 .country {
-	stroke #ffffff
-	stroke-width 1px
-	/*transition fill-opacity 1.5s*/
+	stroke #333333
+	stroke-width 0.5px
 }
 
-.capital {
-	stroke: #ffffff;
-	stroke-width: 1px;
-	fill: #333333;
-	fill-opacity: 1;
-}
+.capital
+	stroke #ffffff
+	stroke-width 1px
+	fill #333333
+	fill-opacity 1
+	pointer-events none
 
 .chorolegend text.label, .toplegend text.label, .label-outside
 	font-size 12px
 
-.toplegend text.label
-	fill white
+.toplegend text.label, #average-label, #title
+	fill black
 	opacity 0.8
+	/*filter url(#textshadow)*/
+	text-shadow: -2px -2px white, -2px 2px white, 2px 2px white, 2px -2px white, -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
 
 rect.swatch
 	stroke #ffffff
@@ -153,3 +155,18 @@ rect.swatch
 
 .y-axis .tick text tspan.countryname
 	font-size 12px
+
+.annotation
+	font-size 0.7em
+
+div.tooltip	
+	position absolute			
+	text-align center						
+	padding 4px
+	width 120px			
+	font 12px sans-serif
+	color white			
+	border 1px solid white	
+	border-radius 3px		
+	pointer-events none	
+	box-shadow 1px 1px 1px 0px #333
