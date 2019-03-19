@@ -27,10 +27,21 @@ min600col = #4d9221
 
 .twinmap-container
 	width 100%
+	max-width 70rem
+	margin auto
 
 .twinmap
-	width 49.8%
-	display inline
+	width 50%
+	float left
+	position relative
+
+.twinmap-title {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  background-color white
+  padding	 5px
+}
 
 /* STICKY SCROLL */
 #scrolly-side .scrolly
@@ -54,13 +65,19 @@ min600col = #4d9221
 			margin-bottom 1rem
 			&:last-of-type
 				margin-bottom 0
-			&.is-active p
+			&.is-active p, &.is-active div
 					background-color secondary
 			p
 				margin 0
 				padding 1rem
 				transition background-color 250ms ease-in-out
-
+			div
+				margin 0
+				padding-left 1rem
+				padding-left 1rem
+				padding-top 0
+				padding-bottom 0
+				transition background-color 250ms ease-in-out
 
 	figure.sticky
 		position sticky
@@ -183,3 +200,25 @@ div.tooltip
 	border-radius 3px		
 	pointer-events none	
 	box-shadow 1px 1px 1px 0px #333
+
+ul {
+  list-style: none;
+}
+
+li.custom-li {
+  padding-left: 2em;
+  text-indent: -2em;
+  padding-right: 5px;
+  line-height: 1.5em
+}
+
+li.region-li:before
+	content: "○ "
+
+li.country-li:before
+	content: "□ "
+	font-size 1.5rem
+
+li.capital-li:before 
+	content: "⦿ "
+	font-size 1.3rem

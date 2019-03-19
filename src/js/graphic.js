@@ -688,7 +688,7 @@ function init() {
 								.text("EU countries, by economic development")
 
 							/* Little maps */
-							let smallmapWidth = 400;
+							/*let smallmapWidth = 400;
 							let smallmapHeight = 400;
 							let smallmapPadding = 40;
 
@@ -807,10 +807,10 @@ function init() {
 
 							makeSmallmap("lithuania13", "LT", 2013);
 							makeSmallmap("lithuania16", "LT", 2016);
-							//makeSmallmap("hungary13", "HU", 2013);
-							//makeSmallmap("hungary16", "HU", 2016);
+							makeSmallmap("hungary13", "HU", 2013);
+							makeSmallmap("hungary16", "HU", 2016);
 							makeSmallmap("poland13", "PL", 2013);
-							makeSmallmap("poland16", "PL", 2016);
+							makeSmallmap("poland16", "PL", 2016);*/
 
 
 							/* Helper functions */
