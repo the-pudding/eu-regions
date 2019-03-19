@@ -210,7 +210,16 @@ function init() {
 											tooltip.transition()		
 												.duration(200)		
 												.style("opacity", 1)
-												.style("background", devscale(+d.properties.gdppps16));		
+												.style("background", devscale(+d.properties.gdppps16))
+												.style("color", () => {
+													if(+d.properties.gdppps16 > 89 && +d.properties.gdppps16 < 110){
+														return "#000000";
+													}
+													else{
+														return "#ffffff";
+													}
+												})
+		
 											tooltip.html(d.properties.NUTS_NAME + "<br/>" + d.properties.gdppps16)
 												.style("left", (d3.event.pageX + 10) + "px")		
 												.style("top", (d3.event.pageY - 28) + "px");
@@ -259,7 +268,15 @@ function init() {
 											tooltip.transition()		
 												.duration(200)		
 												.style("opacity", 1)
-												.style("background", devscale(+d.properties.gdppps16));		
+												.style("background", devscale(+d.properties.gdppps16))
+												.style("color", () => {
+													if(+d.properties.gdppps16 > 89 && +d.properties.gdppps16 < 110){
+														return "#000000";
+													}
+													else{
+														return "#ffffff";
+													}
+												});		
 											tooltip.html(d.properties.NUTS_NAME)
 												.style("left", (d3.event.pageX + 10) + "px")		
 												.style("top", (d3.event.pageY - 28) + "px");
@@ -367,7 +384,7 @@ function init() {
 									threshold75.append('line')
 										.attr("x1", 0)
 										.attr("x2", 0)
-										.attr("y1", height - margin.bottom)
+										.attr("y1", legendy + marginTitleLegend)
 										.attr("y2", height - 32)
 										.style("stroke-width", 1)
 										.style("stroke", devscale(74));
@@ -380,9 +397,9 @@ function init() {
 										.attr("class", "label-outside tk-atlas");
 									threshold75.append("rect")
 										.attr("x", -(devLinearScale(75) - devLinearScale(20)))
-										.attr("y", legendy + legendHeight)
+										.attr("y", legendy + legendHeight + marginTitleLegend)
 										.attr("width", devLinearScale(75) - devLinearScale(20))
-										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 - marginTitleLegend)
 										.style("fill", devscale(74))
 										.style("opacity", 0.1);
 
@@ -392,7 +409,7 @@ function init() {
 									threshold90.append('line')
 										.attr("x1", 0)
 										.attr("x2", 0)
-										.attr("y1", height - margin.bottom)
+										.attr("y1", legendy + marginTitleLegend)
 										.attr("y2", height - 32)
 										.style("stroke-width", 1)
 										.style("stroke", devscale(89));
@@ -405,45 +422,41 @@ function init() {
 										.attr("class", "label-outside tk-atlas");
 									threshold90.append("rect")
 										.attr("x", -(devLinearScale(90) - devLinearScale(75)))
-										.attr("y", legendy + legendHeight)
+										.attr("y", legendy + legendHeight + marginTitleLegend)
 										.attr("width", devLinearScale(90) - devLinearScale(75))
-										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 - marginTitleLegend)
 										.style("fill", devscale(89))
 										.style("opacity", 0.1);
 									mapOne.insert("rect", "path.region")
 										.attr("id", "threshold100")
 										.attr("x", devLinearScale(100) - (devLinearScale(100) - devLinearScale(90)))
 										.attr("y", legendy + legendHeight)
-										.attr("height", height - margin.top - margin.bottom)
 										.attr("width", devLinearScale(100) - devLinearScale(90))
-										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 - marginTitleLegend)
 										.style("fill", devscale(99))
 										.style("opacity", 0.1);
 									mapOne.insert("rect", "path.region")
 										.attr("id", "threshold110")
 										.attr("x", devLinearScale(110) - (devLinearScale(110) - devLinearScale(100)))
-										.attr("y", legendy + legendHeight)
-										.attr("height", height - margin.top - margin.bottom)
+										.attr("y", legendy + legendHeight + marginTitleLegend)
 										.attr("width", devLinearScale(110) - devLinearScale(100))
-										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 - marginTitleLegend)
 										.style("fill", devscale(109))
 										.style("opacity", 0.1);
 									mapOne.insert("rect", "path.region")
 										.attr("id", "threshold125")
 										.attr("x", devLinearScale(125) - (devLinearScale(125) - devLinearScale(110)))
-										.attr("y", legendy + legendHeight)
-										.attr("height", height - margin.top - margin.bottom)
+										.attr("y", legendy + legendHeight + marginTitleLegend)
 										.attr("width", devLinearScale(125) - devLinearScale(110))
-										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 - marginTitleLegend)
 										.style("fill", devscale(124))
 										.style("opacity", 0.1);
 									mapOne.insert("rect", "path.region")
 										.attr("id", "threshold600")
 										.attr("x", devLinearScale(600) - (devLinearScale(600) - devLinearScale(125)))
-										.attr("y", legendy + legendHeight)
-										.attr("height", height - margin.top - margin.bottom)
+										.attr("y", legendy + legendHeight + marginTitleLegend)
 										.attr("width", devLinearScale(600) - devLinearScale(125))
-										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2)
+										.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 - marginTitleLegend)
 										.style("fill", devscale(126))
 										.style("opacity", 0.2);
 
@@ -459,6 +472,8 @@ function init() {
 
 								if(step.index == 9 && step.direction == "down"){
 									highlightRegions(["LT00", "HU10", "PL12"]);
+									d3.select("#PL12").style("stroke", "#000000");
+									d3.select("#HU10").style("stroke", "#000000");
 									let arrowLithuania  = mapOne.append("g")
 										.attr("class", "region-arrow")
 										.attr("transform", `translate(${devLinearScale(75) - 60}, ${countryScale("LT")})`)
@@ -552,13 +567,14 @@ function init() {
 
 							let countrycodes = geojsonNUTS0.features.map((country) => country.properties.CNTR_CODE);
 
-							const margin = {"top": 70, "left": 120, "bottom": 50, "right": 20};
-							const mapPadding = 10;
+							const margin = {"top": 70, "left": 120, "bottom": 50, "right": 120};
+							const marginTitleLegend = 30;
+							const mapPadding = 10 + marginTitleLegend;
 
 							//Scales for the dotplot
 							const countryScale = d3.scalePoint()
 								.domain(countrycodes)
-								.range([margin.top, height - margin.bottom])
+								.range([margin.top + marginTitleLegend, height - margin.bottom])
 							const devLinearScale = d3.scaleLinear()
 								.domain([20, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps16)])
 								.range([margin.left, width - margin.right])
@@ -593,7 +609,15 @@ function init() {
 									tooltip.transition()		
 										.duration(200)		
 										.style("opacity", 1)
-										.style("background", devscale(+d.properties.gdppps16));		
+										.style("background", devscale(+d.properties.gdppps16))
+										.style("color", () => {
+											if(+d.properties.gdppps16 > 89 && +d.properties.gdppps16 < 110){
+												return "#000000";
+											}
+											else{
+												return "#ffffff";
+											}
+									});		
 									tooltip.html(d.properties.NUTS_NAME)
 										.style("left", (d3.event.pageX + 10) + "px")		
 										.style("top", (d3.event.pageY - 28) + "px");
@@ -660,10 +684,10 @@ function init() {
 							const legendHeight = 10;
 							let chorolegendtop = mapOne.append("g")
 								.attr("class", "toplegend tk-atlas")
-								.attr("transform", `translate(${margin.left},${legendy})`);
+								.attr("transform", `translate(${margin.left},${legendy + marginTitleLegend})`);
 							let legendtop = legendColor()
 								.orient("horizontal")
-								.shapeWidth((width - margin.left)/6)
+								.shapeWidth((width - margin.left - margin.right)/6)
 								.labels(["less developed", "", "", "", "", "more developed"])
 								.labelOffset(10)
 								.shapePadding(0)
@@ -672,17 +696,26 @@ function init() {
 							mapOne.select(".toplegend")
 								.call(legendtop);
 
+							mapOne.append("line")
+								.attr("x1", (width - margin.left - margin.right)/2 + margin.left)
+								.attr("x2", (width - margin.left - margin.right)/2 + margin.left)
+								.attr("y1", 30 + marginTitleLegend)
+								.attr("y2", 46 + marginTitleLegend)
+								.attr("stroke", "black")
+								.attr("id", "average-mark")
+								.attr("stroke-width", 1);
+
 							mapOne.append("text")
-								.attr("x", (width - margin.left)/2 + margin.left)
-								.attr("y", 58)
+								.attr("x", (width - margin.left - margin.right)/2 + margin.left)
+								.attr("y", 58 + marginTitleLegend)
 								.text("average")
 								.attr("class", "tk-atlas label-outside")
 								.attr("id", "average-label")
 								.style("text-anchor", "middle");
 
 							let title = mapOne.append("text")
-								.attr("x", margin.left)
-								.attr("y", 20)
+								.attr("x", margin.left + (width - margin.left - margin.right)/2)
+								.attr("y", 20 + marginTitleLegend)
 								.attr("class", "tk-atlas")
 								.attr("id", "title")
 								.text("EU countries, by economic development")
@@ -832,6 +865,7 @@ function init() {
 									.transition().duration(2000)
 									.attr("transform", (d) => `translate(${devLinearScale(d) - margin.left},0)`);
 								d3.selectAll(".cell rect")
+									.transition().duration(2000)
 									.attr("width", (d, i) => {
 										if(i < breaks.lenght){
 											return devLinearScale(breaks[i + 1]) - devLinearScale(d);
@@ -841,18 +875,24 @@ function init() {
 								d3.selectAll(".cell text").transition().duration(2000).style("opacity", 0);
 								d3.select("#average-label").transition().duration(2000)
 									.attr("x", devLinearScale(100))
+								d3.select("#average-mark").transition().duration(2000)
+									.attr("x1", devLinearScale(100))
+									.attr("x2", devLinearScale(100));
 							}
 
 							function scaleLegendCellsMap(){
 								d3.selectAll(".cell")
 									.transition().duration(2000)
-									.attr("transform", (d,i) => `translate(${i * (width - margin.left)/6},0)`);
+									.attr("transform", (d,i) => `translate(${i * (width - margin.left - margin.right)/6},0)`);
 								d3.selectAll(".cell rect")
 									.transition().duration(2000)
-									.attr("width", (width - margin.left)/6)
+									.attr("width", (width - margin.left - margin.right)/6)
 								d3.selectAll(".cell text").transition().duration(2000).style("opacity", 1);
 								d3.select("#average-label").transition().duration(2000)
-									.attr("x", (width - margin.left)/2 + margin.left)
+									.attr("x", (width - margin.left - margin.right)/2 + margin.left)
+								d3.select("#average-mark").transition().duration(2000)
+									.attr("x1", (width - margin.left - margin.right)/2 + margin.left)
+									.attr("x2", (width - margin.left - margin.right)/2 + margin.left);
 							}
 
 

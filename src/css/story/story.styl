@@ -19,7 +19,7 @@ min600col = #4d9221
 .filler
 	margin 0 auto
 	padding 4rem 1rem 1.5rem 1rem
-	max-width 60rem
+	max-width 45rem
 
 .smallmap
 	max-width 800px
@@ -56,21 +56,25 @@ min600col = #4d9221
 		align-items center
 		justify-content center
 
-		padding-right 1rem
+		padding-right 25px
+		padding-left 25px
 		max-width 30rem
 
 		.step
 			align-self center
 			min-height 100vh
 			margin-bottom 1rem
+			opacity 0.5
 			&:last-of-type
 				margin-bottom 0
+			&.is-active
+				opacity 1
 			&.is-active p, &.is-active div
-					background-color secondary
+				background-color secondary
 			p
 				margin 0
 				padding 1rem
-				transition background-color 250ms ease-in-out
+				transition background-color 100ms ease-in-out
 			div
 				margin 0
 				padding-left 1rem
@@ -107,7 +111,7 @@ min600col = #4d9221
 .region
 	stroke #ffffff
 	stroke-width 0.5px
-	transition fill 1000ms ease-in-out, opacity 250ms ease-in-out
+	transition fill 1000ms ease-in-out
 	cursor pointer
 
 .country {
@@ -124,12 +128,18 @@ min600col = #4d9221
 
 .chorolegend text.label, .toplegend text.label, .label-outside
 	font-size 12px
+	font-weight 600
 
 .toplegend text.label, #average-label, #title
 	fill black
 	opacity 0.8
 	/*filter url(#textshadow)*/
-	text-shadow: -2px -2px white, -2px 2px white, 2px 2px white, 2px -2px white, -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
+	text-shadow: -2px -2px white, -2px 2px white, 2px 2px white, 2px -2px white, -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white
+	font-weight 600
+
+#title
+	font-size 24px
+	text-anchor middle
 
 rect.swatch
 	stroke #ffffff
@@ -159,7 +169,7 @@ rect.swatch
 
 .textlegend-90
 	background-color min90col
-	color #ffffff
+	color #000000
 
 .textlegend-100
 	background-color min100col
@@ -169,7 +179,7 @@ rect.swatch
 
 .textlegend-125
 	background-color min125col
-	color #ffffff
+	color #000000
 
 .textlegend-600
 	background-color min600col
@@ -185,6 +195,7 @@ rect.swatch
 
 .y-axis .tick text tspan.countryname
 	font-size 12px
+	font-family Atlas
 
 .annotation
 	font-size 0.7em
@@ -194,8 +205,7 @@ div.tooltip
 	text-align center						
 	padding 4px
 	width 120px			
-	font 12px sans-serif
-	color white			
+	font 12px sans-serif			
 	border 1px solid white	
 	border-radius 3px		
 	pointer-events none	
