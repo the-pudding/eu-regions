@@ -46,7 +46,7 @@ function init() {
 		"UK": "<tspan class='countryname'>UK </tspan>🇬🇧",
 		"FR": "<tspan class='countryname'>France </tspan>🇫🇷",
 		"IT": "<tspan class='countryname'>Italy </tspan>🇮🇹",
-		"MT": "<tspan class='countryname'>Poland </tspan>🇲🇹",
+		"MT": "<tspan class='countryname'>Malta </tspan>🇲🇹",
 		"ES": "<tspan class='countryname'>Spain </tspan>🇪🇸",
 		"CZ": "<tspan class='countryname'>Czechia </tspan>🇨🇿",
 		"CY": "<tspan class='countryname'>Cyprus </tspan>🇨🇾",
@@ -70,7 +70,7 @@ function init() {
 		//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0_filtered_merged_17.json", function(nuts0) {
 		d3.json("assets/data/nuts0-gdppps17-topo.json", function(nuts0) {
 			d3.json("assets/data/land.json", function(land) {
-				d3.json("assets/data/capitals.json", function(capitals) {
+				d3.json("assets/data/capitals-gdppps17.json", function(capitals) {
 						/* Scrollama */
 						const scroller = scrollama();
 						scroller.setup({
