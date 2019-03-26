@@ -7,6 +7,7 @@ Mapshaper console commands to filter out non-EU countries and regions
 -filter 'CNTR_CODE !== "ME"'
 -filter 'CNTR_CODE !== "LI"'
 -filter 'CNTR_CODE !== "AL"'
+-filter 'CNTR_CODE !== "RS"'
 
 
 For filtering out the outre mers of France, Azores, Madeira, Canarias
