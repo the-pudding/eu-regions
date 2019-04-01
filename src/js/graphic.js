@@ -63,7 +63,7 @@ function init() {
 		"RO": "<tspan class='countryname'>Romania </tspan>🇷🇴",
 		"BG": "<tspan class='countryname'>Bulagaria </tspan>🇧🇬"
 	}
-	const capitalRegions = ["AT13","BE10","BG41","CY00","CZ01","DE30","EL30","DK01","EE00","ES30","FR10","HR04","HU10","IE02","LU00","LV00","NL32","ITI4","LT00","PL12","PT17","SI04","SK01","RO32","SE11","UKI3"];
+	const capitalRegions = ["AT13","BE10","BG41","CY00","CZ01","DE30","EL30","DK01","EE00","ES30","FI1B", "FR10","HR04","HU11","IE06","LU00","LV00","MT00","NL32","ITI4","LT01","PL91","PT17","SI04","SK01","RO32","SE11","UKI4"];
 	
 	//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered_merged_17.json", function(nuts2) {
 	d3.json("assets/data/nuts2-gdppps17-topo.json", function(nuts2) {
@@ -280,7 +280,7 @@ function init() {
 								highlightRegions(["UKI3"])
 								let arrow  = mapOne.append("g")
 									.attr("id", "arrow")
-									.attr("transform", `translate(${devLinearScale(610) - 40}, ${countryScale("UK") - 40})`)
+									.attr("transform", `translate(${devLinearScale(626) - 40}, ${countryScale("UK") - 40})`)
 								arrow.append("line")
         							.attr("x1", 0)
         							.attr("y1", 0)
@@ -738,14 +738,16 @@ function init() {
 								.style("opacity", 0.1)
 							regioncodes.forEach(function(region){
 								d3.select(`.region#` + region)
-									.style("opacity", 1);
+									.style("opacity", 1)
+									.style("stroke", "#000000");
 									//.style("filter", "url(#shadow)")
 							});
 						}
 						function dehighlightRegions(){
 							d3.selectAll(".region")
 								.style("opacity", 1)
-								.style("filter", "none");							
+								.style("stroke", "#ffffff");
+								//.style("filter", "none");							
 						}
 						d3.selectAll(".highlight.region")
 							.on("mouseover", function(){
