@@ -61,7 +61,7 @@ function init() {
 		"LV": "<tspan class='countryname'>Latvia </tspan>🇱🇻",
 		"HR": "<tspan class='countryname'>Croatia </tspan>🇭🇷",
 		"RO": "<tspan class='countryname'>Romania </tspan>🇷🇴",
-		"BG": "<tspan class='countryname'>Bulagaria </tspan>🇧🇬"
+		"BG": "<tspan class='countryname'>Bulgaria </tspan>🇧🇬"
 	}
 	const capitalRegions = ["AT13","BE10","BG41","CY00","CZ01","DE30","EL30","DK01","EE00","ES30","FI1B", "FR10","HR04","HU11","IE06","LU00","LV00","MT00","NL32","ITI4","LT01","PL91","PT17","SI04","SK01","RO32","SE11","UKI4"];
 	
@@ -91,7 +91,6 @@ function init() {
 									.style("fill-opacity", 0)
 									.style("pointer-events", "none");
 								title.text("EU regions, by economic development")
-								histogrammifyLegend(getRegionFrequencies("gdppps17", devscale.domain()), devscale.range());
 							}
 							if(step.index == 0 && step.direction == "up"){
 								title.text("EU countries, by economic development")
@@ -99,67 +98,8 @@ function init() {
 									.delay((d, i) => i*100)
 									.style("fill-opacity", 1);
 								let countrycounts = [7, 7, 6, 4, 4];
-								histogrammifyLegend(countrycounts, devscale.range())
 							}
-							/*if(step.index == 5 && step.direction == "down"){
-								regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
-								histogrammifyLegend(getRegionFrequencies("totalpayments0716", absfundScale.domain()), absfundScale.range());
-								d3.selectAll(".cell text.label").data(absfundScale.labels)
-									.text((d) => (d));
-								d3.select(".label-outside").style("opacity", 0);
-							}
-							if(step.index == 4 && step.direction == "up"){
-								regions.style("fill", (d) => devscale(d.properties.gdppps17))
-								d3.selectAll(".cell text.label").data(devscale.labels)
-									.text((d) => (d));
-								histogrammifyLegend(getRegionFrequencies("gdppps17", devscale.domain()), devscale.range());
-								d3.select(".label-outside").style("opacity", 1);
-							}*/
-							/*if(step.index == 5 && step.direction == "down"){
-								let poland = geojsonNUTS0.features.filter(country => country.id == "PL")[0];
-								let zoomedprojection = projection.fitExtent([[mapPadding,mapPadding], [width - mapPadding, height -mapPadding]], poland);
-								let zoomedGeoPath = path(zoomedprojection);
-								regions.transition().duration(2000)
-									.attr("d", zoomedGeoPath);
-							}*/
-							/*if(step.index == 6 && step.direction == "down"){
-								regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
-								histogrammifyLegend(getRegionFrequencies("totalpercapita0716", percapitafundScale.domain())	,absfundScale.range());
-								d3.selectAll(".cell text.label").data(percapitafundScale.labels)
-									.text((d) => (d));
-							}
-							if(step.index == 5 && step.direction == "up"){
-								regions.style("fill", (d) => absfundScale(d.properties.totalpayments0716))
-								histogrammifyLegend(getRegionFrequencies("totalpayments0716", absfundScale.domain()), absfundScale.range());
-								d3.selectAll(".cell text.label").data(absfundScale.labels)
-									.text((d) => (d));
-							}
-							if(step.index == 7 && step.direction == "down"){
-								regions.style("fill", (d) => fundpercgdpScale(d.properties.fundpercgdp15))
-								histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()),fundpercgdpScale.range());
-								d3.selectAll(".cell text.label").data(fundpercgdpScale.labels)
-									.text((d) => (d));
-							}
-							if(step.index == 6 && step.direction == "up"){
-								regions.style("fill", (d) => percapitafundScale(d.properties.totalpercapita0716))
-								histogrammifyLegend(getRegionFrequencies("totalpercapita0716", percapitafundScale.domain())	,percapitafundScale.range());
-								d3.selectAll(".cell text.label").data(percapitafundScale.labels)
-									.text((d) => (d));
-							}
-							if(step.index == 8 && step.direction == "down"){
-								regions.style("fill", (d) => devscale(d.properties.gdppps17))
-								histogrammifyLegend(getRegionFrequencies("gdppps17", devscale.domain()), devscale.range());
-								d3.selectAll(".cell text.label").data(devscale.labels)
-									.text((d) => (d));
-							}
-							if(step.index == 7 && step.direction == "up"){
-								regions.style("fill", (d) => fundpercgdpScale(d.properties.fundpercgdp15))
-								histogrammifyLegend(getRegionFrequencies("fundpercgdp15", fundpercgdpScale.domain()), fundpercgdpScale.range());
-								d3.selectAll(".cell text.label").data(fundpercgdpScale.labels)
-									.text((d) => (d));
-							}*/
 							if(step.index == 4 && step.direction == "down"){
-								//chorolegend.style("opacity", 0);
 								scaleLegendCells();
 								landsilhouette.transition().duration(2000).style("opacity", 0);
 								othercaps.transition().duration(2000).style("opacity", 0);
@@ -215,7 +155,6 @@ function init() {
 									.style("opacity", 0);
 								countries.style("opacity", 1)
 									.style("fill-opacity", 0);
-								//chorolegend.style("opacity", 1);
 								landsilhouette.transition().duration(2000).style("opacity", 1);
 								othercaps.transition().duration(2000).style("opacity", 1);
 								graticule.transition().duration(2000).style("opacity", 1);
@@ -305,7 +244,7 @@ function init() {
 								devLinearScale.domain([20, 260])
 								scaleLegendCells();
 								d3.select("#arrow").transition().duration(2000)
-									.attr("transform", `translate(${devLinearScale(610) - 40}, ${countryScale("UK") - 40})`)
+									.attr("transform", `translate(${devLinearScale(626) - 40}, ${countryScale("UK") - 40})`)
 								regions.transition().duration(2000)
 									.attrTween("d", function(d){
 									return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps17), 	countryScale(d.properties.CNTR_CODE), 6);
@@ -429,7 +368,7 @@ function init() {
 								d3.select("#threshold125").remove();
 								d3.select("#threshold600").remove();
 							}
-							if(step.index == 9 && step.direction == "down"){
+							/*if(step.index == 9 && step.direction == "down"){
 								highlightRegions(["LT00", "HU10", "PL12"]);
 								d3.select("#PL12").style("stroke", "#000000");
 								d3.select("#HU10").style("stroke", "#000000");
@@ -490,13 +429,10 @@ function init() {
 							if(step.index == 8 && step.direction == "up"){
 								dehighlightRegions();
 								d3.selectAll(".region-arrow").remove();
-							}
+							}*/
 						}
 						const devscale = d3.scaleThreshold()
 							.domain([75, 90, 100, 110, 125])
-							//.range(["#009B9E","#42B7B9","#A7D3D4","#E4C1D9","#D691C1","#C75DAB"].reverse());
-							//.range(["#C36969", "#DEAD97", "#F2DCBB", "#EFF3D3", "#9AB4C0", "#5E8393"]) //NYT https:/www.nytimes.com/2018/10/01/upshot/maps-neighborhoods-shape-child-poverty.html
-							//.range(['#d73027','#fc8d59','#fee090','#e0f3f8','#91bfdb','#4575b4']) //Colorbrewer RdYlBl
 							.range(['#c51b7d','#e9a3c9','#fde0ef','#e6f5d0','#a1d76a','#4d9221']) //Colorbrewer PiYG
 						devscale.labels = ["less developed", "", "", "", "", "more developed"];
 						const absfundScale = d3.scaleThreshold()
@@ -526,7 +462,7 @@ function init() {
 							.range([margin.top + marginTitleLegend, height - margin.bottom])
 						const devLinearScale = d3.scaleLinear()
 							.domain([20, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps17)])
-							.range([margin.left, width - margin.right])
+							.range([margin.left, width - 20])
 						//Set up map
 						projection.fitExtent([[mapPadding, mapPadding + 25], [width - mapPadding, height - mapPadding]], geojsonNUTS2);
 						let graticule  = mapOne.append("path")
@@ -600,25 +536,11 @@ function init() {
 							.attr("cy", (d) => projection(d.geometry.coordinates)[1])
 							.style("filter", "url(#capitalshadow)")
 							.attr("id", (d) => d.name);
-						//Legend
-						/*let chorolegend = mapOne.append("g")
-						  .attr("class", "chorolegend tk-atlas")
-						  .attr("transform", `translate(${width - 170}, 150)`);
-						let legend = legendColor()
-							.orient("horizontal")
-							.labelWrap(50)
-							//.shapePadding()
-							.shapeWidth(20)
-							.labels(["Less developed", "", "", "", "", "More developed"])
-							.scale(devscale);
-						mapOne.select(".chorolegend")
-							.call(legend);*/
-						let countrycounts = [7, 7, 3, 3, 4, 4];
-						histogrammifyLegend(countrycounts, devscale.range());
+
 						//Alternative legend
 						const legendy = 30;
 						const legendHeight = 10;
-						let chorolegendtop = mapOne.append("g")
+						mapOne.append("g")
 							.attr("class", "toplegend tk-atlas")
 							.attr("transform", `translate(${margin.left},${legendy + marginTitleLegend})`);
 						let legendtop = legendColor()
@@ -651,26 +573,127 @@ function init() {
 							.attr("y", 20 + marginTitleLegend)
 							.attr("class", "tk-atlas")
 							.attr("id", "title")
-							.text("EU countries, by economic development")
+							.text("EU countries, by economic development");
+
+						//Dot animation
+						let localScale = d3.scaleLinear()
+							.domain([20, 200])
+							.range([100, 600])
+						let animsvg = d3.select(".animation-HU")
+							.attr("width", 600)
+							.attr("height", 100);
+						let avg = animsvg.append("g")
+							.attr("transform", `translate(${localScale(100)}, 20)`);
+						avg.append("line")
+							.attr("x1", 0)
+							.attr("x2", 0)
+							.attr("y1", -20)
+							.attr("y2", 20)
+							.style("stroke-width", 1)
+							.style("stroke", "#000000");
+						avg.append('text')
+							.attr("x", 0)
+							.attr("y", 32)
+							.text(100)
+							.style("text-anchor", "middle")
+							.style("fill", "#000000")
+							.attr("class", "label-outside tk-atlas");
+						let ninety = animsvg.append("g")
+							.attr("transform", `translate(${localScale(90)}, 20)`);
+						ninety.append("line")
+							.attr("x1", 0)
+							.attr("x2", 0)
+							.attr("y1", -20)
+							.attr("y2", 20)
+							.style("stroke-width", 1)
+							.style("stroke", devscale(89));
+						ninety.append('text')
+							.attr("x", 0)
+							.attr("y", 32)
+							.text(90)
+							.style("text-anchor", "middle")
+							.style("fill", devscale(89))
+							.attr("class", "label-outside tk-atlas");
+
+						let seventyfive = animsvg.append("g")
+							.attr("transform", `translate(${localScale(75)}, 20)`);
+						seventyfive.append("line")
+							.attr("x1", 0)
+							.attr("x2", 0)
+							.attr("y1", -20)
+							.attr("y2", 20)
+							.style("stroke-width", 1)
+							.style("stroke", devscale(74));
+						seventyfive.append('text')
+							.attr("x", 0)
+							.attr("y", 32)
+							.text(75)
+							.style("text-anchor", "middle")
+							.style("fill", devscale(74))
+							.attr("class", "label-outside tk-atlas");
+
+						let countryRegionsData = geojsonNUTS2.features.filter((reg) => reg.properties.CNTR_CODE == "HU");
+						animsvg.append("line")
+							.attr("x1", 100)
+							.attr("x2", 600)
+							.attr("y1", 20)
+							.attr("y2", 20)
+							.style("stroke", "#cccccc");
+						animsvg.selectAll("circle.countryregion").data(countryRegionsData)
+							.enter().append("circle")
+							.attr("cx", (d) => {
+								if(d.properties.NUTS_ID == "HU11" || d.properties.NUTS_ID == "HU12"){
+									return localScale(102)
+								}
+								else{ return localScale(d.properties.gdppps17)}
+							})
+							.attr("cy", 20)
+							.attr("r", 8)
+							.style("fill", (d) => devscale(d.properties.gdppps17))
+							.style("stroke", "#ffffff")
+							.attr("class", (d) => d.properties.NUTS_ID);
+						let newRegions = d3.selectAll(".HU11, .HU12").raise();
+
+						animsvg.append("circle")
+							.attr("cx", localScale(102))
+							.attr("cy", 20)
+							.attr("r", 8)
+							.style("fill", devscale(102))
+							.style("stroke", "#000000")
+							.attr("id", "HU10")
+							.each(update);
+
+						function update() {	
+							(function repeat() {
+								d3.select("#HU10")
+									.style("opacity", 1)
+									.transition().duration(5000)
+									.style("opacity", 0.1);
+								newRegions
+									.attr("cx", localScale(102))
+									.transition().duration(5000)
+										.attr("cx", (d) => localScale(d.properties.gdppps17))
+									.on("end", repeat);			
+							})();
+						}
+						
+						animsvg.append("text")
+							.attr("x", 0)
+							.attr("y", 20)
+							.text("Hungary 🇭🇺")
+							.attr("class", "countryname")
+							.attr("dy", "0.4em");
+
+						
 
 						/* Helper functions */
-						function histogrammifyLegend(histovalues, colors){
-							/*const legendhistoheight = 100;
-							let histoScale = d3.scaleLinear()
-								.domain([0, d3.max(histovalues)])
-								.range([0, legendhistoheight])*/
-							d3.selectAll(".cell rect").data(histovalues)
-								.transition().duration(1000)
-								.style("fill", (d, i) => colors[i]);
-								//.attr("height", (d) => histoScale(d))
-								//.attr("transform", (d) => `translate(0, -${histoScale(d) - 14})`);
-						}
 						function scaleLegendCells(){
 							const breaks = [devLinearScale.domain()[0]].concat(devscale.domain());
 							d3.selectAll(".cell").data(breaks)
 								.transition().duration(2000)
 								.attr("transform", (d) => `translate(${devLinearScale(d) - margin.left},0)`);
 							d3.selectAll(".cell rect")
+								.data(breaks)
 								.transition().duration(2000)
 								.attr("width", (d, i) => {
 									if(i < breaks.lenght){
@@ -699,12 +722,7 @@ function init() {
 								.attr("x1", (width - margin.left - margin.right)/2 + margin.left)
 								.attr("x2", (width - margin.left - margin.right)/2 + margin.left);
 						}
-						function getRegionFrequencies(property, thresholds){
-							let histo = d3.histogram()
-								.value((d) => +d.properties[property])
-								.thresholds(thresholds);
-							return histo(geojsonNUTS2.features).map((bin) => bin.length);
-						}
+
 						//Country highlighting
 						function highlightCountryRegions(countrycode, mapid){
 								d3.selectAll(`#${mapid} .region:not(.${countrycode})`)
