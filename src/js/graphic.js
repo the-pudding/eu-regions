@@ -758,20 +758,25 @@ function init() {
 							}).map((region) => region.properties.NUTS_ID);
 						}
 						function highlightRegions(regioncodes){
-							d3.selectAll(".region")
-								.style("opacity", 0.1)
+							if(regioncodes.length > 1){
+								d3.selectAll(".region")
+									.style("opacity", 0.1);
+							}
+							
 							regioncodes.forEach(function(region){
 								d3.select(`.region#` + region)
 									.style("opacity", 1)
-									.style("stroke", "#000000");
-									//.style("filter", "url(#shadow)")
+									.style("stroke", "#000000")
+									.raise();
+								countries.raise();
+								eucaps.raise();
+								
 							});
 						}
 						function dehighlightRegions(){
 							d3.selectAll(".region")
 								.style("opacity", 1)
-								.style("stroke", "#ffffff");
-								//.style("filter", "none");							
+								.style("stroke", "#ffffff");						
 						}
 						d3.selectAll(".highlight.region")
 							.on("mouseover", function(){
