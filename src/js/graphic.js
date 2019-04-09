@@ -33,7 +33,7 @@ function init() {
 
 	let path = d3.geoPath()
 		.projection(projection);
-	
+
 	const emojiflags = {
 		"LU": "<tspan class='countryname'>Luxembourg </tspan>🇱🇺",
 		"IE": "<tspan class='countryname'>Ireland </tspan>🇮🇪",
@@ -65,7 +65,7 @@ function init() {
 		"BG": "<tspan class='countryname'>Bulgaria </tspan>🇧🇬"
 	}
 	const capitalRegions = ["AT13","BE10","BG41","CY00","CZ01","DE30","EL30","DK01","EE00","ES30","FI1B", "FR10","HR04","HU11","IE06","LU00","LV00","MT00","NL32","ITI4","LT01","PL91","PT17","SI04","SK01","RO32","SE11","UKI4"];
-	
+
 	//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered_merged_17.json", function(nuts2) {
 	d3.json("assets/data/nuts2-gdppps17-topo.json", function(nuts2) {
 		//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0_filtered_merged_17.json", function(nuts0) {
@@ -79,8 +79,8 @@ function init() {
 						})
 						.onStepEnter(handleStepEnter);
 						//Tooltip
-						let tooltip = d3.select("body").append("div")	
-    						.attr("class", "tooltip")				
+						let tooltip = d3.select("body").append("div")
+    						.attr("class", "tooltip")
     						.style("opacity", 0.9);
 						//TODO: add functions to steps based on data attributes, not on indices
 						function handleStepEnter(step){
@@ -121,8 +121,8 @@ function init() {
 									});
 								regions
 									.on("mouseover", function(d){
-										tooltip.transition()		
-											.duration(200)		
+										tooltip.transition()
+											.duration(200)
 											.style("opacity", 1)
 											.style("background", devscale(+d.properties.gdppps17))
 											.style("color", () => {
@@ -133,9 +133,9 @@ function init() {
 													return "#ffffff";
 												}
 											})
-	
+
 										tooltip.html(d.properties.NUTS_NAME + "<br/>" + d.properties.gdppps17)
-											.style("left", (d3.event.pageX + 10) + "px")		
+											.style("left", (d3.event.pageX + 10) + "px")
 											.style("top", (d3.event.pageY - 28) + "px");
 										highlightRegions([d.properties.NUTS_ID])
 									})
@@ -152,7 +152,7 @@ function init() {
 									.call(yAxis).lower();
 								d3.selectAll(".y-axis .tick text")
 									.html(function(){ return emojiflags[d3.select(this).text()]})
-									.style("opacity", 0).transition().delay(3000).duration(7000)
+									.style("opacity", 0).transition().delay(3000).duration(1000)
 										.style("opacity", 1);
 							}
 							if(step.index == 3 && step.direction == "up"){
@@ -172,11 +172,11 @@ function init() {
 									.delay((d, i) => i*200)
 									.attrTween("d", function(d){
 										return fromRect(devLinearScale(+d.properties.gdppps17), countryScale(d.properties.CNTR_CODE), 6, 6, path(d.geometry));
-									});	
+									});
 								regions
 									.on("mouseover", function(d){
-										tooltip.transition()		
-											.duration(200)		
+										tooltip.transition()
+											.duration(200)
 											.style("opacity", 1)
 											.style("background", devscale(+d.properties.gdppps17))
 											.style("color", () => {
@@ -186,9 +186,9 @@ function init() {
 												else{
 													return "#ffffff";
 												}
-											});		
+											});
 										tooltip.html(d.properties.NUTS_NAME)
-											.style("left", (d3.event.pageX + 10) + "px")		
+											.style("left", (d3.event.pageX + 10) + "px")
 											.style("top", (d3.event.pageY - 28) + "px");
 										highlightRegions([d.properties.NUTS_ID])
 									})
@@ -196,7 +196,7 @@ function init() {
 									.delay((d, i) => i*20)
 									.attrTween("d", function(d){
 										return fromCircle(devLinearScale(+d.properties.gdppps17), countryScale(d.properties.CNTR_CODE), 6, path(d.geometry));
-									});							
+									});
 							}
 							if(step.index == 5 && step.direction == "down"){
 								let average = mapOne.insert("g", "path.region")
@@ -323,7 +323,7 @@ function init() {
 									.attr("y", height - 20)
 									.text(90)
 									.style("text-anchor", "middle")
-									.style("fill", devscale(89))
+									.style("fill", d3.color(devscale(89)).darker(2).toString())//d3.color(devscale(89)))
 									.attr("class", "label-outside tk-atlas");
 								threshold90.append("rect")
 									.attr("x", -(devLinearScale(90) - devLinearScale(75)))
@@ -429,8 +429,8 @@ function init() {
 							.attr("id", (d) => d.id)
 							.style("fill", (d) => devscale(+d.properties.gdppps17))
 							.on("mouseover", function(d){
-								tooltip.transition()		
-									.duration(200)		
+								tooltip.transition()
+									.duration(200)
 									.style("opacity", 1)
 									.style("background", devscale(+d.properties.gdppps17))
 									.style("color", () => {
@@ -440,15 +440,15 @@ function init() {
 										else{
 											return "#ffffff";
 										}
-								});		
+								});
 								tooltip.html(d.properties.NUTS_NAME)
-									.style("left", (d3.event.pageX + 10) + "px")		
+									.style("left", (d3.event.pageX + 10) + "px")
 									.style("top", (d3.event.pageY - 28) + "px");
 								highlightRegions([d.properties.NUTS_ID])
 							})
 							.on("mouseout", function(d){
-								tooltip.transition()		
-									.duration(200)		
+								tooltip.transition()
+									.duration(200)
 									.style("opacity", 0);
 								dehighlightRegions();
 							});
@@ -462,7 +462,7 @@ function init() {
 
 						let eucapsFeatures = capitals.features.filter((cap) => cap.properties.NUTS_ID);
 						let othercapsFeatures = capitals.features.filter((cap) => !cap.properties.NUTS_ID);
-						
+
 						let othercaps = mapOne.selectAll("circle.capital")
 							.data(othercapsFeatures)
 							.enter().append("path")
@@ -557,7 +557,7 @@ function init() {
 								.attr("y", 32)
 								.text(90)
 								.style("text-anchor", "middle")
-								.style("fill", devscale(89))
+								.style("fill", d3.color(devscale(89)).darker(1.2).toString())//d3.color(devscale(89)))
 								.attr("class", "label-outside tk-atlas");
 
 							let seventyfive = animsvg.append("g")
@@ -583,7 +583,8 @@ function init() {
 								.attr("x2", animWidth)
 								.attr("y1", 20)
 								.attr("y2", 20)
-								.style("stroke", "#cccccc");
+								.style("stroke", "#999")
+								.style("shape-rendering", "crispEdges");
 							animsvg.selectAll("circle.countryregion").data(countryRegionsData)
 								.enter().append("circle")
 								.attr("cx", (d) => {
@@ -608,7 +609,7 @@ function init() {
 								.attr("id", oldregionID)
 								.each(update);
 
-							function update() {	
+							function update() {
 								(function repeat() {
 									d3.select("#" + oldregionID)
 										.style("opacity", 1)
@@ -618,7 +619,7 @@ function init() {
 										.attr("cx", localScale(oldvalue))
 										.transition().duration(5000)
 											.attr("cx", (d) => localScale(d.properties.gdppps17))
-										.on("end", repeat);			
+										.on("end", repeat);
 								})();
 							}
 
@@ -633,7 +634,7 @@ function init() {
 						drawAnimation("LT", "LT01", "LT02", 75, "LT00", "Lithuania 🇱🇹");
 						drawAnimation("PL", "PL91", "PL92", 109, "PL12", "Poland 🇵🇱");
 
-						
+
 						/* Helper functions */
 						function scaleLegendCells(){
 							const breaks = [devLinearScale.domain()[0]].concat(devscale.domain());
@@ -692,7 +693,7 @@ function init() {
 								let countryCode = d3.select(this).attr("id");
 								dehighlightCountryRegions(countryCode, "mapone");
 							});
-						
+
 						//Region highlighting
 						function getRegionsByThresholds(thlow, thhigh, measure){
 							return geojsonNUTS2.features.filter(function(region){
@@ -704,7 +705,7 @@ function init() {
 								d3.selectAll(".region")
 									.style("opacity", 0.1);
 							}
-							
+
 							regioncodes.forEach(function(region){
 								d3.select(`.region#` + region)
 									.style("opacity", 1)
@@ -712,13 +713,13 @@ function init() {
 									.raise();
 								countries.raise();
 								eucaps.raise();
-								
+
 							});
 						}
 						function dehighlightRegions(){
 							d3.selectAll(".region")
 								.style("opacity", 1)
-								.style("stroke", "#ffffff");						
+								.style("stroke", "#ffffff");
 						}
 						d3.selectAll(".highlight.region")
 							.on("mouseover", function(){
@@ -727,7 +728,7 @@ function init() {
 							}).on("mouseout", function(){
 								dehighlightRegions();
 							});
-						
+
 						d3.selectAll(".textlegend")
 							.on("mouseover", function(){
 								let thHigh = d3.select(this).attr("data-th-high");
@@ -737,8 +738,8 @@ function init() {
 								highlightRegions(regionsToHighlight);
 							}).on("mouseout", function(){
 								dehighlightRegions();
-							});	
-						
+							});
+
 						//Highlight regions containing the country capital
 						d3.selectAll(".highlight.capital-regions")
 							.on("mouseover", function(){
