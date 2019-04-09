@@ -83,6 +83,10 @@ function init() {
     						.style("opacity", 0.9);
 						//TODO: add functions to steps based on data attributes, not on indices
 						function handleStepEnter(step){
+
+							//Track scrolling
+							ga("send", "event", "scroll", step.direction, step.index);
+
 							d3.selectAll(".step").classed("is-active", false);
 							d3.select(step.element).classed("is-active", true);
 							if(step.index == 1 && step.direction == "down"){
@@ -368,68 +372,6 @@ function init() {
 								d3.select("#threshold125").remove();
 								d3.select("#threshold600").remove();
 							}
-							/*if(step.index == 9 && step.direction == "down"){
-								highlightRegions(["LT00", "HU10", "PL12"]);
-								d3.select("#PL12").style("stroke", "#000000");
-								d3.select("#HU10").style("stroke", "#000000");
-								let arrowLithuania  = mapOne.append("g")
-									.attr("class", "region-arrow")
-									.attr("transform", `translate(${devLinearScale(75) - 60}, ${countryScale("LT")})`)
-								arrowLithuania.append("line")
-        							.attr("x1", 0)
-        							.attr("y1", 0)
-        							.attr("x2", 40)
-        							.attr("y2", 0)
-        							.attr("stroke-width", 2)
-        							.attr("stroke", "black")
-									.attr("marker-end", "url(#triangle)");
-								arrowLithuania.append("text")
-									.attr("x", 0)
-									.attr("y", -6)
-									.text("Lithuania")
-									.style("text-anchor", "middle")
-									.attr("class", "tk-atlas annotation");
-									
-								let arrowBudapest  = mapOne.append("g")
-									.attr("class", "region-arrow")
-									.attr("transform", `translate(${devLinearScale(105) + 5}, ${countryScale("HU") + 5})`)
-								arrowBudapest.append("line")
-        							.attr("x1", 40)
-        							.attr("y1", 20)
-        							.attr("x2", 0)
-        							.attr("y2", 0)
-        							.attr("stroke-width", 2)
-        							.attr("stroke", "black")
-									.attr("marker-end", "url(#triangle)");
-								arrowBudapest.append("text")
-									.attr("x", 40)
-									.attr("y", 35)
-									.text("Budapest")
-									.style("text-anchor", "start")
-									.attr("class", "tk-atlas annotation");
-									
-								let arrowWarsaw  = mapOne.append("g")
-									.attr("class", "region-arrow")
-									.attr("transform", `translate(${devLinearScale(114)}, ${countryScale("PL") - 24})`)
-								arrowWarsaw.append("line")
-        							.attr("x1", 40)
-        							.attr("y1", 0)
-        							.attr("x2", 0)
-        							.attr("y2", 20)
-        							.attr("stroke-width", 2)
-        							.attr("stroke", "black")
-									.attr("marker-end", "url(#triangle)");
-								arrowWarsaw.append("text")
-									.attr("x", 40)
-									.attr("y", -6)
-									.text("Warsaw")
-									.style("text-anchor", "start")
-									.attr("class", "tk-atlas annotation");
-							}
-							if(step.index == 8 && step.direction == "up"){
-								dehighlightRegions();
-								d3.selectAll(".region-arrow").remove();
-							}*/
 						}
 						const devscale = d3.scaleThreshold()
 							.domain([75, 90, 100, 110, 125])
