@@ -537,7 +537,7 @@ function init() {
 							.style("filter", "url(#capitalshadow)")
 							.attr("id", (d) => d.name);
 
-						//Alternative legend
+						//Legend
 						const legendy = 30;
 						const legendHeight = 10;
 						mapOne.append("g")
@@ -575,117 +575,123 @@ function init() {
 							.attr("id", "title")
 							.text("EU countries, by economic development");
 
-						//Dot animation
-						let localScale = d3.scaleLinear()
-							.domain([20, 200])
-							.range([100, 600])
-						let animsvg = d3.select(".animation-HU")
-							.attr("width", 600)
-							.attr("height", 100);
-						let avg = animsvg.append("g")
-							.attr("transform", `translate(${localScale(100)}, 20)`);
-						avg.append("line")
-							.attr("x1", 0)
-							.attr("x2", 0)
-							.attr("y1", -20)
-							.attr("y2", 20)
-							.style("stroke-width", 1)
-							.style("stroke", "#000000");
-						avg.append('text')
-							.attr("x", 0)
-							.attr("y", 32)
-							.text(100)
-							.style("text-anchor", "middle")
-							.style("fill", "#000000")
-							.attr("class", "label-outside tk-atlas");
-						let ninety = animsvg.append("g")
-							.attr("transform", `translate(${localScale(90)}, 20)`);
-						ninety.append("line")
-							.attr("x1", 0)
-							.attr("x2", 0)
-							.attr("y1", -20)
-							.attr("y2", 20)
-							.style("stroke-width", 1)
-							.style("stroke", devscale(89));
-						ninety.append('text')
-							.attr("x", 0)
-							.attr("y", 32)
-							.text(90)
-							.style("text-anchor", "middle")
-							.style("fill", devscale(89))
-							.attr("class", "label-outside tk-atlas");
+						//Dot animations
+						let drawAnimation = function(countrycode, region1ID, region2ID, oldvalue, oldregionID, countryNameEmoji){
+							const animWidth = select(`.animation-container-${countrycode}`).clientWidth;
+							console.log(animWidth);
+							let localScale = d3.scaleLinear()
+								.domain([20, 200])
+								.range([100, animWidth])
+							let animsvg = d3.select(`.animation-${countrycode}`)
+								.attr("width", animWidth)
+								.attr("height", 100);
+							let avg = animsvg.append("g")
+								.attr("transform", `translate(${localScale(100)}, 20)`);
+							avg.append("line")
+								.attr("x1", 0)
+								.attr("x2", 0)
+								.attr("y1", -20)
+								.attr("y2", 20)
+								.style("stroke-width", 1)
+								.style("stroke", "#000000");
+							avg.append('text')
+								.attr("x", 0)
+								.attr("y", 32)
+								.text(100)
+								.style("text-anchor", "middle")
+								.style("fill", "#000000")
+								.attr("class", "label-outside tk-atlas");
+							let ninety = animsvg.append("g")
+								.attr("transform", `translate(${localScale(90)}, 20)`);
+							ninety.append("line")
+								.attr("x1", 0)
+								.attr("x2", 0)
+								.attr("y1", -20)
+								.attr("y2", 20)
+								.style("stroke-width", 1)
+								.style("stroke", devscale(89));
+							ninety.append('text')
+								.attr("x", 0)
+								.attr("y", 32)
+								.text(90)
+								.style("text-anchor", "middle")
+								.style("fill", devscale(89))
+								.attr("class", "label-outside tk-atlas");
 
-						let seventyfive = animsvg.append("g")
-							.attr("transform", `translate(${localScale(75)}, 20)`);
-						seventyfive.append("line")
-							.attr("x1", 0)
-							.attr("x2", 0)
-							.attr("y1", -20)
-							.attr("y2", 20)
-							.style("stroke-width", 1)
-							.style("stroke", devscale(74));
-						seventyfive.append('text')
-							.attr("x", 0)
-							.attr("y", 32)
-							.text(75)
-							.style("text-anchor", "middle")
-							.style("fill", devscale(74))
-							.attr("class", "label-outside tk-atlas");
+							let seventyfive = animsvg.append("g")
+								.attr("transform", `translate(${localScale(75)}, 20)`);
+							seventyfive.append("line")
+								.attr("x1", 0)
+								.attr("x2", 0)
+								.attr("y1", -20)
+								.attr("y2", 20)
+								.style("stroke-width", 1)
+								.style("stroke", devscale(74));
+							seventyfive.append('text')
+								.attr("x", 0)
+								.attr("y", 32)
+								.text(75)
+								.style("text-anchor", "middle")
+								.style("fill", devscale(74))
+								.attr("class", "label-outside tk-atlas");
 
-						let countryRegionsData = geojsonNUTS2.features.filter((reg) => reg.properties.CNTR_CODE == "HU");
-						animsvg.append("line")
-							.attr("x1", 100)
-							.attr("x2", 600)
-							.attr("y1", 20)
-							.attr("y2", 20)
-							.style("stroke", "#cccccc");
-						animsvg.selectAll("circle.countryregion").data(countryRegionsData)
-							.enter().append("circle")
-							.attr("cx", (d) => {
-								if(d.properties.NUTS_ID == "HU11" || d.properties.NUTS_ID == "HU12"){
-									return localScale(102)
-								}
-								else{ return localScale(d.properties.gdppps17)}
-							})
-							.attr("cy", 20)
-							.attr("r", 8)
-							.style("fill", (d) => devscale(d.properties.gdppps17))
-							.style("stroke", "#ffffff")
-							.attr("class", (d) => d.properties.NUTS_ID);
-						let newRegions = d3.selectAll(".HU11, .HU12").raise();
+							let countryRegionsData = geojsonNUTS2.features.filter((reg) => reg.properties.CNTR_CODE == countrycode);
+							animsvg.append("line")
+								.attr("x1", 100)
+								.attr("x2", animWidth)
+								.attr("y1", 20)
+								.attr("y2", 20)
+								.style("stroke", "#cccccc");
+							animsvg.selectAll("circle.countryregion").data(countryRegionsData)
+								.enter().append("circle")
+								.attr("cx", (d) => {
+									if(d.properties.NUTS_ID == region1ID || d.properties.NUTS_ID == region2ID){
+										return localScale(oldvalue)
+									}
+									else{ return localScale(d.properties.gdppps17)}
+								})
+								.attr("cy", 20)
+								.attr("r", 8)
+								.style("fill", (d) => devscale(d.properties.gdppps17))
+								.style("stroke", "#ffffff")
+								.attr("class", (d) => d.properties.NUTS_ID);
+							let newRegions = d3.selectAll(`.${region1ID}, .${region2ID}`).raise();
 
-						animsvg.append("circle")
-							.attr("cx", localScale(102))
-							.attr("cy", 20)
-							.attr("r", 8)
-							.style("fill", devscale(102))
-							.style("stroke", "#000000")
-							.attr("id", "HU10")
-							.each(update);
+							animsvg.append("circle")
+								.attr("cx", localScale(oldvalue))
+								.attr("cy", 20)
+								.attr("r", 8)
+								.style("fill", devscale(oldvalue))
+								.style("stroke", "#000000")
+								.attr("id", oldregionID)
+								.each(update);
 
-						function update() {	
-							(function repeat() {
-								d3.select("#HU10")
-									.style("opacity", 1)
-									.transition().duration(5000)
-									.style("opacity", 0.1);
-								newRegions
-									.attr("cx", localScale(102))
-									.transition().duration(5000)
-										.attr("cx", (d) => localScale(d.properties.gdppps17))
-									.on("end", repeat);			
-							})();
+							function update() {	
+								(function repeat() {
+									d3.select("#" + oldregionID)
+										.style("opacity", 1)
+										.transition().duration(5000)
+										.style("opacity", 0.1);
+									newRegions
+										.attr("cx", localScale(oldvalue))
+										.transition().duration(5000)
+											.attr("cx", (d) => localScale(d.properties.gdppps17))
+										.on("end", repeat);			
+								})();
+							}
+
+							animsvg.append("text")
+								.attr("x", 0)
+								.attr("y", 20)
+								.text(countryNameEmoji)
+								.attr("class", "countryname")
+								.attr("dy", "0.4em");
 						}
-						
-						animsvg.append("text")
-							.attr("x", 0)
-							.attr("y", 20)
-							.text("Hungary 🇭🇺")
-							.attr("class", "countryname")
-							.attr("dy", "0.4em");
+						drawAnimation("HU", "HU11", "HU12", 102, "HU10", "Hungary 🇭🇺");
+						drawAnimation("LT", "LT01", "LT02", 75, "LT00", "Lithuania 🇱🇹");
+						drawAnimation("PL", "PL91", "PL92", 109, "PL12", "Poland 🇵🇱");
 
 						
-
 						/* Helper functions */
 						function scaleLegendCells(){
 							const breaks = [devLinearScale.domain()[0]].concat(devscale.domain());
