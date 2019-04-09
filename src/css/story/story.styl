@@ -87,11 +87,23 @@ min600col = #4d9221
 	figure.sticky
 		position sticky
 		width 100%
-		height 100vhs
+		height 100vh
 		margin 0
 		top 0
 		left 0
 		transform translate3d(0,0,0)
+
+@media only screen and (max-width: 768px)
+	#scrolly-side .scrolly
+		display inline
+	
+	#scrolly-side .scrolly figure.sticky
+		width 100vw
+		z-index -10
+
+	.twinmap
+		width 100%
+	
 
 /* MAP */
 .mapcontainer
@@ -139,7 +151,7 @@ min600col = #4d9221
 	font-weight 600
 
 #title
-	font-size 24px
+	font-size 1.5em
 	text-anchor middle
 
 rect.swatch

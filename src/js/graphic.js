@@ -578,7 +578,6 @@ function init() {
 						//Dot animations
 						let drawAnimation = function(countrycode, region1ID, region2ID, oldvalue, oldregionID, countryNameEmoji){
 							const animWidth = select(`.animation-container-${countrycode}`).clientWidth;
-							console.log(animWidth);
 							let localScale = d3.scaleLinear()
 								.domain([20, 200])
 								.range([100, animWidth])
