@@ -5,6 +5,7 @@ import "intersection-observer";
 import scrollama from "scrollama";
 import { legendColor } from "d3-svg-legend";
 import { toCircle, fromCircle, toRect, fromRect } from "flubber";
+import tracker from './utils/tracker'
 
 //TODO: handle resize
 function resize() {}
@@ -85,7 +86,7 @@ function init() {
 						function handleStepEnter(step){
 
 							//Track scrolling
-							ga("send", "event", "scroll", step.direction, step.index);
+							tracker.send({category: `${step.index}-${step.direction}`, action: 'scroll'});
 
 							d3.selectAll(".step").classed("is-active", false);
 							d3.select(step.element).classed("is-active", true);
