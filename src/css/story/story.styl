@@ -16,10 +16,25 @@ min110col = #e6f5d0
 min125col = #a1d76a
 min600col = #4d9221
 
+h2
+	font-family 'Atlas Grotesk Web'
+	font-size 24px
+	margin-top 0rem
+
 .filler
 	margin 0 auto
-	padding 4rem 1rem 1.5rem 1rem
-	max-width 45rem
+	padding 1rem 1rem 1.5rem 1rem
+	max-width 40rem
+	ol
+		list-style-position outside
+		li
+			//font-family 'Atlas Grotesk Web'
+			margin-left 3rem
+			//font-size 14px
+			font-size 16px
+			margin-bottom 1rem
+
+
 
 .smallmap
 	max-width 800px
@@ -29,24 +44,33 @@ min600col = #4d9221
 	width 100%
 	max-width 70rem
 	margin auto
+	display flex
+	margin-bottom 4rem
 
 .twinmap
 	width 50%
-	float left
 	position relative
-
-.twinmap-title {
-  position absolute
-  top 8px
-  left 16px
-  background-color rgba(255,255,255,0.5)
-  padding 5px
-  font-size 0.8em
-}
+	display flex
+	flex-direction column
+	.twinmap-title
+		//position absolute
+		//top 8px
+		//left 0px
+		//background-color rgba(255,255,255,0.9)
+		padding 5px
+		font-size 16px
+		font-weight 500
+		//right 0px
+		text-align center
+		margin 0 auto
+		order 1
+	img
+		order 2
 
 /* STICKY SCROLL */
 #scrolly-side .scrolly
 	display flex
+	margin-top 4rem
 
 	& > *
 		flex 1
@@ -75,14 +99,15 @@ min600col = #4d9221
 			p
 				margin 0
 				padding 1rem
-				transition background-color 100ms ease-in-out
+				border-left 3px solid #a5a6b3
+				//-webkit-font-smoothing auto
 			div
 				margin 0
 				padding-left 1rem
 				padding-left 1rem
 				padding-top 0
 				padding-bottom 0
-				transition background-color 250ms ease-in-out
+				border-left 3px solid #a5a6b3
 
 	figure.sticky
 		position sticky
@@ -96,14 +121,14 @@ min600col = #4d9221
 @media only screen and (max-width: 768px)
 	#scrolly-side .scrolly
 		display inline
-	
+
 	#scrolly-side .scrolly figure.sticky
 		width 100vw
 		z-index -10
 
 	.twinmap
 		width 100%
-	
+
 
 /* MAP */
 .mapcontainer
@@ -151,8 +176,10 @@ min600col = #4d9221
 	font-weight 600
 
 #title
-	font-size 1.5em
+	font-size 24px
 	text-anchor middle
+	font-weight 500
+	transform translate(0,-5px)
 
 rect.swatch
 	stroke #ffffff
@@ -172,18 +199,40 @@ rect.swatch
 	padding-bottom 2px
 	color #000000
 	cursor pointer
+	font-family 'Atlas Grotesk Web'
+	font-size 14px
+	font-weight 500
+	border-bottom 2px solid #a5a6b3
+	padding 2px 7px
+	margin 0px 1px
+	white-space nowrap
+	-webkit-font-smoothing antialiased
+	-moz-osx-font-smoothing grayscale
 
 .textlegend.Budapest
 	background-color #b72542
 	color #ffffff
+	border-color #6b1c28
 
 
 .highlight
 	background-color #dddddd
+	background-color white
+	font-family 'Atlas Grotesk Web'
+	font-size 14px
+	font-weight 500
+	border-bottom 2px solid #a5a6b3
+	padding 2px 7px
+	margin 0px 1px
+	white-space nowrap
+	&:hover
+		background #bbb
+		color black
 
 .textlegend-75
 	background-color min75col
 	color #ffffff
+	border-bottom 2px solid #652a47
 
 .textlegend-90
 	background-color min90col
@@ -216,21 +265,22 @@ rect.swatch
 	font-family 'Atlas Grotesk'
 
 text.countryname
-	font-size 18px
+	font-size 16px
+	font-weight 400
 	font-family 'Atlas Grotesk'
 
 .annotation
 	font-size 0.7em
 
-div.tooltip	
-	position absolute			
-	text-align center						
+div.tooltip
+	position absolute
+	text-align center
 	padding 4px
-	width 120px			
-	font 12px sans-serif			
-	border 1px solid white	
-	border-radius 3px		
-	pointer-events none	
+	width 120px
+	font 12px sans-serif
+	border 1px solid white
+	border-radius 3px
+	pointer-events none
 	box-shadow 1px 1px 1px 0px #333
 
 #legend-ul {
@@ -251,7 +301,7 @@ li.country-li:before
 	content: "□ "
 	font-size 1.5rem
 
-li.capital-li:before 
+li.capital-li:before
 	content: "⦿ "
 	font-size 1.3rem
 
@@ -263,4 +313,9 @@ ol
 
 .animation-title
 	text-align center
-	margin-bottom 2em
+	margin-bottom 1.5em
+	font-weight 600
+	text-transform uppercase
+	font-size 14px
+	letter-spacing .5px
+	margin-top 4rem
