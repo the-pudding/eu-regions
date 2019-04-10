@@ -45,13 +45,17 @@ h2
 	max-width 70rem
 	margin auto
 	display flex
-	margin-bottom 4rem
+	flex-wrap wrap
 
 .twinmap
 	width 50%
 	position relative
 	display flex
 	flex-direction column
+	margin-bottom 4rem
+	@media (max-width:768px)
+		margin-bottom 2rem
+
 	.twinmap-title
 		//position absolute
 		//top 8px
@@ -84,23 +88,43 @@ h2
 		padding-right 25px
 		padding-left 25px
 		max-width 30rem
+		@media (max-width:1000px)
+			max-width 25rem
+		@media (max-width:768px)
+			margin 0 auto
+
 
 		.step
 			align-self center
 			min-height 100vh
 			margin-bottom 1rem
 			opacity 0.5
+			@media (max-width:768px)
+				min-height auto
+				margin-bottom 90vh
 			&:last-of-type
 				margin-bottom 0
+				@media (max-width:768px)
+					min-height 100vh
 			&.is-active
 				opacity 1
 			&.is-active p, &.is-active div
 				background-color secondary
+				@media (max-width:768px)
+					background-color rgba(255,255,255,.95)
 			p
 				margin 0
 				padding 1rem
 				border-left 3px solid #a5a6b3
 				//-webkit-font-smoothing auto
+				&:first-of-type
+					@media (max-width:768px)
+						border-left none
+						border-top 3px solid #a5a6b3
+				&:not(:first-of-type)
+					@media (max-width:768px)
+						border-left none
+						border-top none
 			div
 				margin 0
 				padding-left 1rem
@@ -108,6 +132,8 @@ h2
 				padding-top 0
 				padding-bottom 0
 				border-left 3px solid #a5a6b3
+				@media (max-width:768px)
+					border-left none
 
 	figure.sticky
 		position sticky
@@ -168,18 +194,32 @@ h2
 	font-size 12px
 	font-weight 600
 
-.toplegend text.label, #average-label, #title
+.toplegend text.label, #average-label
 	fill black
 	opacity 0.8
 	/*filter url(#textshadow)*/
 	text-shadow: -2px -2px white, -2px 2px white, 2px 2px white, 2px -2px white, -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white
 	font-weight 600
+	@media (max-width: 450px)
+		font-size 12px
+		font-weight 500
 
 #title
 	font-size 24px
 	text-anchor middle
 	font-weight 500
 	transform translate(0,-5px)
+	fill black
+	opacity 0.8
+	/*filter url(#textshadow)*/
+	text-shadow: -2px -2px white, -2px 2px white, 2px 2px white, 2px -2px white, -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white
+	font-weight 600
+	@media (max-width:550px)
+		font-size 18px
+	@media (max-width:400px)
+		font-size 16px
+	@media (max-width:375px)
+		font-size 15px
 
 rect.swatch
 	stroke #ffffff
@@ -208,6 +248,9 @@ rect.swatch
 	white-space nowrap
 	-webkit-font-smoothing antialiased
 	-moz-osx-font-smoothing grayscale
+	@media (max-width:768px)
+		background-color #f7f7f7
+		color black
 
 .textlegend.Budapest
 	background-color #b72542
@@ -233,6 +276,9 @@ rect.swatch
 	background-color min75col
 	color #ffffff
 	border-bottom 2px solid #652a47
+	@media (max-width:768px)
+		background-color min75col
+		color white
 
 .textlegend-90
 	background-color min90col
@@ -263,6 +309,9 @@ rect.swatch
 .y-axis .tick text tspan.countryname
 	font-size 12px
 	font-family 'Atlas Grotesk'
+	@media (max-width: 375px)
+		font-size 10px
+		font-weight 500
 
 text.countryname
 	font-size 16px
@@ -310,6 +359,8 @@ ol
 
 .animation-container
 	width 100%
+	.countryname
+		display none
 
 .animation-title
 	text-align center
@@ -319,3 +370,6 @@ ol
 	font-size 14px
 	letter-spacing .5px
 	margin-top 4rem
+	@media (max-width: 500px)
+		letter-spacing 0px
+		text-transform none

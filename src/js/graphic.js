@@ -12,6 +12,7 @@ function resize() {}
 
 function init() {
 	let width = select(".mapcontainer").clientWidth;
+
 	let height = select(".mapcontainer").clientHeight;
 	let mapOne = d3.select("svg#mapone")
 		.attr("width", width)
@@ -64,6 +65,38 @@ function init() {
 		"RO": "<tspan class='countryname'>Romania </tspan>🇷🇴",
 		"BG": "<tspan class='countryname'>Bulgaria </tspan>🇧🇬"
 	}
+
+	const emojiflagsMobile = {
+		"LU": "<tspan class='countryname'>LUX </tspan>🇱🇺",
+		"IE": "<tspan class='countryname'>IRL </tspan>🇮🇪",
+		"NL": "<tspan class='countryname'>NLD </tspan>🇳🇱",
+		"AT": "<tspan class='countryname'>AUT </tspan>🇦🇹",
+		"DE": "<tspan class='countryname'>DEU </tspan>🇩🇪",
+		"DK": "<tspan class='countryname'>DNK </tspan>🇩🇰",
+		"SE": "<tspan class='countryname'>SWE </tspan>🇸🇪",
+		"BE": "<tspan class='countryname'>BEL </tspan>🇧🇪",
+		"FI": "<tspan class='countryname'>FIN </tspan>🇫🇮",
+		"UK": "<tspan class='countryname'>GBR </tspan>🇬🇧",
+		"FR": "<tspan class='countryname'>FRA </tspan>🇫🇷",
+		"IT": "<tspan class='countryname'>ITA </tspan>🇮🇹",
+		"MT": "<tspan class='countryname'>MLT </tspan>🇲🇹",
+		"ES": "<tspan class='countryname'>ESP </tspan>🇪🇸",
+		"CZ": "<tspan class='countryname'>CZE </tspan>🇨🇿",
+		"CY": "<tspan class='countryname'>CYP </tspan>🇨🇾",
+		"SI": "<tspan class='countryname'>SVN </tspan>🇸🇮",
+		"PT": "<tspan class='countryname'>PRT </tspan>🇵🇹",
+		"SK": "<tspan class='countryname'>SVK </tspan>🇸🇰",
+		"EE": "<tspan class='countryname'>EST </tspan>🇪🇪",
+		"LT": "<tspan class='countryname'>LTU </tspan>🇱🇹",
+		"EL": "<tspan class='countryname'>GRC </tspan>🇬🇷",
+		"PL": "<tspan class='countryname'>POL </tspan>🇵🇱",
+		"HU": "<tspan class='countryname'>HUN </tspan>🇭🇺",
+		"LV": "<tspan class='countryname'>LVA </tspan>🇱🇻",
+		"HR": "<tspan class='countryname'>HRV </tspan>🇭🇷",
+		"RO": "<tspan class='countryname'>ROU </tspan>🇷🇴",
+		"BG": "<tspan class='countryname'>BGR </tspan>🇧🇬"
+	}
+
 	const capitalRegions = ["AT13","BE10","BG41","CY00","CZ01","DE30","EL30","DK01","EE00","ES30","FI1B", "FR10","HR04","HU11","IE06","LU00","LV00","MT00","NL32","ITI4","LT01","PL91","PT17","SI04","SK01","RO32","SE11","UKI4"];
 
 	//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered_merged_17.json", function(nuts2) {
@@ -150,10 +183,18 @@ function init() {
 									.attr("transform", `translate(${margin.left}, 0)`)
 									.attr("class", "y-axis")
 									.call(yAxis).lower();
-								d3.selectAll(".y-axis .tick text")
-									.html(function(){ return emojiflags[d3.select(this).text()]})
+								let ticksYAxis = d3.selectAll(".y-axis .tick text")
+									.html(function(){
+										if(contentWidth < 768){
+											return emojiflagsMobile[d3.select(this).text()]
+										}
+										return emojiflags[d3.select(this).text()]
+										// return
+									})
 									.style("opacity", 0).transition().delay(3000).duration(1000)
-										.style("opacity", 1);
+									.style("opacity", 1)
+									;
+
 							}
 							if(step.index == 3 && step.direction == "up"){
 								d3.selectAll(".y-axis").transition().duration(2000)
@@ -396,7 +437,17 @@ function init() {
 							return d3.descending(+x.properties.gdppps17, +y.properties.gdppps17)
 						})
 						let countrycodes = geojsonNUTS0.features.map((country) => country.properties.CNTR_CODE);
-						const margin = {"top": 70, "left": 120, "bottom": 50, "right": 120};
+						let margin = {"top": 70, "left": 120, "bottom": 50, "right": 120};
+						const contentWidth = d3.select("#content").node().clientWidth;
+						console.log(contentWidth);
+						if(contentWidth < 768){
+							margin.left = 75;
+							margin.right = 75;
+						}
+						if(contentWidth < 400){
+							margin.left = 55;
+							margin.right = 55;
+						}
 						const marginTitleLegend = 30;
 						const mapPadding = 10 + marginTitleLegend;
 						//Scales for the dotplot
@@ -524,6 +575,9 @@ function init() {
 							let localScale = d3.scaleLinear()
 								.domain([20, 200])
 								.range([100, animWidth])
+							if(contentWidth < 500){
+								localScale.range([0,animWidth]);
+							}
 							let animsvg = d3.select(`.animation-${countrycode}`)
 								.attr("width", animWidth)
 								.attr("height", 100);
@@ -579,7 +633,7 @@ function init() {
 
 							let countryRegionsData = geojsonNUTS2.features.filter((reg) => reg.properties.CNTR_CODE == countrycode);
 							animsvg.append("line")
-								.attr("x1", 100)
+								.attr("x1", localScale.range()[0])
 								.attr("x2", animWidth)
 								.attr("y1", 20)
 								.attr("y2", 20)

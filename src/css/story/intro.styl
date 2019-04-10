@@ -1,9 +1,11 @@
 .test-intro
-	background rgba(255, 234, 236, 0.8)
+	background #f7f7f7
 
 .intro-test.filler
 	max-width 40rem
 	margin-bottom 2rem
+	@media (max-width:768px)
+		margin-bottom 0rem
 	p
 		font-size 24px
 		//-webkit-font-smoothing antialiased
@@ -64,3 +66,5 @@
 		text-align left
 		//set-type-size('medium', true)
 		margin-bottom 2rem
+		@media (max-width:768px)
+			font-size 16px
