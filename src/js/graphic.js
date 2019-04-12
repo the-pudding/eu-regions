@@ -5,7 +5,7 @@ import "intersection-observer";
 import scrollama from "scrollama";
 import { legendColor } from "d3-svg-legend";
 import { toCircle, fromCircle, toRect, fromRect } from "flubber";
-import tracker from './utils/tracker'
+import tracker from './utils/tracker';
 
 //TODO: handle resize
 function resize() {}
