@@ -74,7 +74,7 @@ h2
 /* STICKY SCROLL */
 #scrolly-side .scrolly
 	display flex
-	margin-top 4rem
+	margin-top 2rem
 
 	& > *
 		flex 1
@@ -228,6 +228,12 @@ rect.swatch
 .y-axis path
 	display none
 
+.y-axis .tick image
+	transform translate(-25px, -4px)
+	@media (max-width:768px)
+		transform translate(-22px, -5px)
+
+
 .y-axis .tick line
 	stroke #eeeeee
 
@@ -255,7 +261,8 @@ rect.swatch
 .textlegend.Budapest
 	background-color #b72542
 	color #ffffff
-	border-color #6b1c28
+	border none
+	padding-bottom 4px
 
 
 .highlight
@@ -276,6 +283,10 @@ rect.swatch
 	background-color min75col
 	color #ffffff
 	border-bottom 2px solid #652a47
+	border none
+	padding-bottom 4px
+	margin 0
+	border-radius 0px
 	@media (max-width:768px)
 		background-color min75col
 		color white
@@ -283,32 +294,59 @@ rect.swatch
 .textlegend-90
 	background-color min90col
 	color #000000
+	border none
+	padding-bottom 4px
+	margin 0
+	border-radius 0px
+	pointer arrow
 
 .textlegend-100
 	background-color min100col
+	border none
+	padding-bottom 4px
+	margin 0
+	border-radius 0px
 
 .textlegend-110
 	background-color min110col
+	border none
+	padding-bottom 4px
+	margin 0
+	border-radius 0px
 
 .textlegend-125
 	background-color min125col
 	color #000000
+	border none
+	padding-bottom 4px
+	margin 0
+	border-radius 0px
 
 .textlegend-600
 	background-color min600col
 	color #ffffff
+	border none
+	padding-bottom 4px
+	margin 0
+	border-radius 0px
 
 .textlegend-5perc
 	background-color fivepercgdp
 	color #ffffff
 
+.button
+	border-bottom 2px solid #652a47
+	border-radius 4px
+	padding-bottom 2px
 .y-axis .tick text
 	font-size 2em
 	alignment-baseline middle
+	fill-opacity 0
 
 .y-axis .tick text tspan.countryname
 	font-size 12px
 	font-family 'Atlas Grotesk Web'
+	fill-opacity 1
 	@media (max-width: 375px)
 		font-size 10px
 		font-weight 500

@@ -35,6 +35,8 @@ function init() {
 	let path = d3.geoPath()
 		.projection(projection);
 
+	let flagsBuilt = false;
+
 	const emojiflags = {
 		"LU": "<tspan class='countryname'>Luxembourg </tspan>🇱🇺",
 		"IE": "<tspan class='countryname'>Ireland </tspan>🇮🇪",
@@ -177,12 +179,41 @@ function init() {
 										.attrTween("d", function(d){
 											return toCircle(d3.select(this).attr("d"), devLinearScale(+d.properties.gdppps17), countryScale(d.properties.CNTR_CODE), 6);
 									});
+
 								let yAxis = d3.axisLeft(countryScale)
 									.tickSize(-width);
+
+								mapOne.selectAll(".y-axis").remove();
+
 								mapOne.append("g")
 									.attr("transform", `translate(${margin.left}, 0)`)
 									.attr("class", "y-axis")
 									.call(yAxis).lower();
+
+								// if(!flagsBuilt){
+									let ticksYAxisImage = d3.selectAll(".y-axis .tick")
+										.append("image")
+										.attr("xlink:href",function(){
+											console.log(d3.select(this.parentNode).text());
+											return "assets/img/flags_png/"+d3.select(this.parentNode).text()+".png"
+										})
+										.attr("width",20)
+										.attr("height",function(){
+											return Math.round(20*.67);
+										})
+										.style("opacity", 0).transition().delay(3000).duration(1000)
+										.style("opacity", 1)
+
+										;
+								// 	flagsBuilt = true;
+								// }
+
+								// let ticksYAxisImage = d3.selectAll(".y-axis .tick")
+								// 	.selectAll("image")
+								// 	.style("opacity", 0).transition().delay(3000).duration(1000)
+								// 	.style("opacity", 1)
+
+
 								let ticksYAxis = d3.selectAll(".y-axis .tick text")
 									.html(function(){
 										if(contentWidth < 768){
@@ -199,6 +230,7 @@ function init() {
 							if(step.index == 3 && step.direction == "up"){
 								d3.selectAll(".y-axis").transition().duration(2000)
 									.style("opacity", 0);
+
 								countries.style("opacity", 1)
 									.style("fill-opacity", 0);
 								landsilhouette.transition().duration(2000).style("opacity", 1);
