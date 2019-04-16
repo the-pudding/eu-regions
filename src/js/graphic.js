@@ -114,7 +114,7 @@ function init() {
 						let tooltip = d3.select("body").append("div")
     						.attr("class", "tooltip")
 							.style("opacity", 0.9);
-							
+
 						function handleStepEnter(step){
 							//Track scrolling
 							tracker.send({category: `${step.index}-${step.direction}`, action: 'scroll'});
@@ -189,7 +189,8 @@ function init() {
 									let ticksYAxisImage = d3.selectAll(".y-axis .tick")
 										.append("image")
 										.attr("xlink:href",function(){
-											return "assets/img/flags_png/"+d3.select(this.parentNode).text()+".png"
+											console.log(d3.select(this.parentNode).text().toLowerCase());
+											return "assets/img/flags_png/"+(d3.select(this.parentNode).text().toLowerCase())+".png"
 										})
 										.attr("width",20)
 										.attr("height",function(){
