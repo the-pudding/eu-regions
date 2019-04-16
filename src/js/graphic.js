@@ -7,7 +7,6 @@ import { legendColor } from "d3-svg-legend";
 import { toCircle, fromCircle, toRect, fromRect } from "flubber";
 import tracker from './utils/tracker';
 
-//TODO: handle resize
 function resize() {}
 
 function init() {
@@ -101,10 +100,8 @@ function init() {
 
 	const capitalRegions = ["AT13","BE10","BG41","CY00","CZ01","DE30","EL30","DK01","EE00","ES30","FI1B", "FR10","HR04","HU11","IE06","LU00","LV00","MT00","NL32","ITI4","LT01","PL91","PT17","SI04","SK01","RO32","SE11","UKI4"];
 
-	//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_2_filtered_merged_17.json", function(nuts2) {
-	d3.json("assets/data/nuts2-gdppps17-topo.json", function(nuts2) {
-		//d3.json("assets/data/NUTS_RG_20M_2013_4326_LEVL_0_filtered_merged_17.json", function(nuts0) {
-		d3.json("assets/data/nuts0-gdppps17-topo.json", function(nuts0) {
+	d3.json("assets/data/nuts2_gdppps17_topo.json", function(nuts2) {
+		d3.json("assets/data/nuts0_gdppps17_topo.json", function(nuts0) {
 			d3.json("assets/data/land.json", function(land) {
 				d3.json("assets/data/capitals-gdppps17.json", function(capitals) {
 						/* Scrollama */
@@ -116,10 +113,9 @@ function init() {
 						//Tooltip
 						let tooltip = d3.select("body").append("div")
     						.attr("class", "tooltip")
-    						.style("opacity", 0.9);
-						//TODO: add functions to steps based on data attributes, not on indices
+							.style("opacity", 0.9);
+							
 						function handleStepEnter(step){
-
 							//Track scrolling
 							tracker.send({category: `${step.index}-${step.direction}`, action: 'scroll'});
 
@@ -137,7 +133,6 @@ function init() {
 								countries.transition().duration(1000)
 									.delay((d, i) => i*100)
 									.style("fill-opacity", 1);
-								let countrycounts = [7, 7, 6, 4, 4];
 							}
 							if(step.index == 4 && step.direction == "down"){
 								scaleLegendCells();
@@ -194,7 +189,6 @@ function init() {
 									let ticksYAxisImage = d3.selectAll(".y-axis .tick")
 										.append("image")
 										.attr("xlink:href",function(){
-											console.log(d3.select(this.parentNode).text());
 											return "assets/img/flags_png/"+d3.select(this.parentNode).text()+".png"
 										})
 										.attr("width",20)
@@ -463,15 +457,15 @@ function init() {
 							.domain([1, 2, 3, 4, 5])
 							.range(["#5B3794","#8F4D9F","#B76AA8","#D78CB1","#F1B1BE","#F8DCD9"].reverse());//RdPu
 						fundpercgdpScale.labels = ["<1% gdp", "1-2", "2-3", "3-4", "4-5", ">5% gdp"];
-						let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.data);
-						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.data);
+
+						let geojsonNUTS2 = topojson.feature(nuts2, nuts2.objects.foo);
+						let geojsonNUTS0 = topojson.feature(nuts0, nuts0.objects.foo);
 						geojsonNUTS0.features = geojsonNUTS0.features.sort(function(x, y){
 							return d3.descending(+x.properties.gdppps17, +y.properties.gdppps17)
 						})
 						let countrycodes = geojsonNUTS0.features.map((country) => country.properties.CNTR_CODE);
 						let margin = {"top": 70, "left": 120, "bottom": 50, "right": 120};
 						const contentWidth = d3.select("#content").node().clientWidth;
-						console.log(contentWidth);
 						if(contentWidth < 768){
 							margin.left = 75;
 							margin.right = 75;
@@ -490,7 +484,14 @@ function init() {
 							.domain([20, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps17)])
 							.range([margin.left, width - 20])
 						//Set up map
-						projection.fitExtent([[mapPadding, mapPadding + 25], [width - mapPadding, height - mapPadding]], geojsonNUTS2);
+						let extent = {
+							'type': 'Feature',
+							'geometry': {
+							'type': 'Polygon',
+							'coordinates': [[[0, 70], [35, 70], [0, 35], [35, 35]]]
+							}
+						}
+						projection.fitExtent([[mapPadding, mapPadding + 25], [width - mapPadding, height - mapPadding]], extent);
 						let graticule  = mapOne.append("path")
 							.datum(d3.geoGraticule())
 							.attr("d", path)
@@ -504,12 +505,13 @@ function init() {
 						geojsonNUTS2.features = geojsonNUTS2.features.sort(function(x, y){
 							return d3.ascending(countryScale(x.properties.CNTR_CODE), countryScale(y.properties.CNTR_CODE))
 						});
+
 						let regions = mapOne.selectAll("path.region")
 							.data(geojsonNUTS2.features)
 							.enter().append("path")
 							.attr("class", (d) => `region ${d.properties.CNTR_CODE}`)
 							.attr("d", path)
-							.attr("id", (d) => d.id)
+							.attr("id", (d) => d.properties.id)
 							.style("fill", (d) => devscale(+d.properties.gdppps17))
 							.on("mouseover", function(d){
 								tooltip.transition()
