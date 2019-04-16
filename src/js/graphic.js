@@ -607,8 +607,8 @@ function init() {
 						let drawAnimation = function(countrycode, region1ID, region2ID, oldvalue, oldregionID, countryNameEmoji){
 							const animWidth = select(`.animation-container-${countrycode}`).clientWidth;
 							let localScale = d3.scaleLinear()
-								.domain([20, 200])
-								.range([100, animWidth])
+								.domain([30, 170])
+								.range([0, animWidth])
 							if(contentWidth < 500){
 								localScale.range([0,animWidth]);
 							}
@@ -711,12 +711,12 @@ function init() {
 								})();
 							}
 
-							animsvg.append("text")
+							/*animsvg.append("text")
 								.attr("x", 0)
 								.attr("y", 20)
 								.text(countryNameEmoji)
 								.attr("class", "countryname")
-								.attr("dy", "0.4em");
+								.attr("dy", "0.4em");*/
 						}
 						drawAnimation("HU", "HU11", "HU12", 102, "HU10", "Hungary 🇭🇺");
 						drawAnimation("LT", "LT01", "LT02", 75, "LT00", "Lithuania 🇱🇹");
