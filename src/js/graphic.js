@@ -214,7 +214,6 @@ function init() {
 											return emojiflagsMobile[d3.select(this).text()]
 										}
 										return emojiflags[d3.select(this).text()]
-										// return
 									})
 									.style("opacity", 0).transition().delay(3000).duration(1000)
 									.style("opacity", 1)
