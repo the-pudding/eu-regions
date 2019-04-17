@@ -192,9 +192,9 @@ function init() {
 											console.log(d3.select(this.parentNode).text().toLowerCase());
 											return "assets/img/flags_png/"+(d3.select(this.parentNode).text().toLowerCase())+".png"
 										})
-										.attr("width",20)
+										.attr("width",15)
 										.attr("height",function(){
-											return Math.round(20*.67);
+											return Math.round(15*.67);
 										})
 										.style("opacity", 0).transition().delay(3000).duration(1000)
 										.style("opacity", 1)
@@ -208,7 +208,6 @@ function init() {
 								// 	.style("opacity", 0).transition().delay(3000).duration(1000)
 								// 	.style("opacity", 1)
 
-
 								let ticksYAxis = d3.selectAll(".y-axis .tick text")
 									.html(function(){
 										if(contentWidth < 768){
@@ -220,8 +219,24 @@ function init() {
 									.style("opacity", 1)
 									;
 
+								let averageTwo = mapOne.insert("g", "path.region")
+									.attr("id", "average-two")
+									.attr("transform", `translate(${devLinearScale(100)}, 0)`);
+
+								averageTwo.append("line")
+									.attr("x1", 0)
+									.attr("x2", 0)
+									.attr("y1", margin.top)
+									.attr("y2", height - 32)
+									.attr("class","average-line-two")
+									.style("opacity", 0).transition().delay(3000).duration(1000)
+									.style("opacity", 1)
+									;
+
 							}
 							if(step.index == 3 && step.direction == "up"){
+								d3.select("#average-two").remove();
+
 								d3.selectAll(".y-axis").transition().duration(2000)
 									.style("opacity", 0);
 
@@ -266,6 +281,8 @@ function init() {
 									});
 							}
 							if(step.index == 5 && step.direction == "down"){
+								d3.select("#average-two").remove();
+
 								let average = mapOne.insert("g", "path.region")
 									.attr("id", "average")
 									.attr("transform", `translate(${devLinearScale(100)}, 0)`);
@@ -286,6 +303,7 @@ function init() {
 							}
 							if(step.index == 4 && step.direction == "up"){
 								d3.select("#average").remove();
+								d3.select("#average-two").remove();
 							}
 							if(step.index == 6 && step.direction == "down"){
 								highlightRegions(["UKI3"])
@@ -551,7 +569,7 @@ function init() {
 						let othercaps = mapOne.selectAll("circle.capital")
 							.data(othercapsFeatures)
 							.enter().append("path")
-							.attr("class", "capital")
+							.attr("class", "capital other-capital")
 							.attr("d", path.pointRadius(3))
 							.style("filter", "url(#capitalshadow)")
 							.attr("id", (d) => d.name);
@@ -585,6 +603,7 @@ function init() {
 							.attr("x1", (width - margin.left - margin.right)/2 + margin.left)
 							.attr("x2", (width - margin.left - margin.right)/2 + margin.left)
 							.attr("y1", 30 + marginTitleLegend)
+							.attr("y2", 46 + marginTitleLegend)
 							.attr("y2", 46 + marginTitleLegend)
 							.attr("stroke", "black")
 							.attr("id", "average-mark")

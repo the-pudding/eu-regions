@@ -172,6 +172,11 @@ h2
 	fill: #f1f1f1;
 }
 
+.average-line-two
+	stroke-width 1px
+	stroke #666
+
+
 .region
 	stroke #ffffff
 	stroke-width 0.5px
@@ -179,8 +184,8 @@ h2
 	cursor pointer
 
 .country {
-	stroke #333333
-	stroke-width 0.5px
+	stroke #444
+	stroke-width 1px
 }
 
 .capital
@@ -189,6 +194,9 @@ h2
 	fill #333333
 	fill-opacity 1
 	pointer-events none
+
+.other-capital
+	fill #b7b7b7
 
 .chorolegend text.label, .toplegend text.label, .label-outside
 	font-size 12px
@@ -229,9 +237,9 @@ rect.swatch
 	display none
 
 .y-axis .tick image
-	transform translate(-25px, -4px)
+	transform translate(-20px, -4px)
 	@media (max-width:768px)
-		transform translate(-22px, -5px)
+		transform translate(-20px, -5px)
 
 
 .y-axis .tick line
