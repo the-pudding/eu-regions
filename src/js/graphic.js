@@ -236,6 +236,12 @@ function init() {
 							}
 							if(step.index == 3 && step.direction == "up"){
 								d3.select("#average-two").remove();
+								d3.select("#threshold75").remove();
+								d3.select("#threshold90").remove();
+								d3.select("#threshold100").remove();
+								d3.select("#threshold110").remove();
+								d3.select("#threshold125").remove();
+								d3.select("#threshold600").remove();
 
 								d3.selectAll(".y-axis").transition().duration(2000)
 									.style("opacity", 0);
@@ -282,6 +288,7 @@ function init() {
 							}
 							if(step.index == 5 && step.direction == "down"){
 								d3.select("#average-two").remove();
+								d3.selectAll("#average").remove();
 
 								let average = mapOne.insert("g", "path.region")
 									.attr("id", "average")
@@ -307,6 +314,7 @@ function init() {
 							}
 							if(step.index == 6 && step.direction == "down"){
 								highlightRegions(["UKI3"])
+								d3.selectAll("#arrow").remove();
 								let arrow  = mapOne.append("g")
 									.attr("id", "arrow")
 									.attr("transform", `translate(${devLinearScale(626) - 40}, ${countryScale("UK") - 40})`)
@@ -350,6 +358,7 @@ function init() {
 									.attr("cx", (d) => devLinearScale(+d.properties.gdppps17));
 							}
 							if(step.index == 6 && step.direction == "up"){
+								d3.select("#average-two").remove();
 								devLinearScale.domain([20, d3.max(geojsonNUTS2.features, (d) => +d.properties.gdppps17)]);
 								scaleLegendCells();
 								d3.select("#arrow").transition().duration(2000)
@@ -383,7 +392,7 @@ function init() {
 									.attr("x", 0)
 									.attr("y", height - 20)
 									.text(75)
-									.style("text-anchor", "middle")
+									.style("text-anchor", "end")
 									.style("fill", devscale(74))
 									.attr("class", "label-outside tk-atlas");
 								threshold75.append("rect")
@@ -407,7 +416,7 @@ function init() {
 									.attr("x", 0)
 									.attr("y", height - 20)
 									.text(90)
-									.style("text-anchor", "middle")
+									.style("text-anchor", "end")
 									.style("fill", d3.color(devscale(89)).darker(2).toString())//d3.color(devscale(89)))
 									.attr("class", "label-outside tk-atlas");
 								threshold90.append("rect")
@@ -417,30 +426,72 @@ function init() {
 									.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 -marginTitleLegend)
 									.style("fill", devscale(89))
 									.style("opacity", 0.1);
-								mapOne.insert("rect", "path.region")
-									.attr("id", "threshold100")
-									.attr("x", devLinearScale(100) - (devLinearScale(100) - devLinearScale(90)))
-									.attr("y", legendy + legendHeight)
-									.attr("width", devLinearScale(100) - devLinearScale(90))
-									.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 -marginTitleLegend)
-									.style("fill", devscale(99))
-									.style("opacity", 0.1);
-								mapOne.insert("rect", "path.region")
+
+								// mapOne.insert("rect", "path.region")
+								// 	.attr("id", "threshold100")
+								// 	.attr("x", devLinearScale(100) - (devLinearScale(100) - devLinearScale(90)))
+								// 	.attr("y", legendy + legendHeight)
+								// 	.attr("width", devLinearScale(100) - devLinearScale(90))
+								// 	.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 -marginTitleLegend)
+								// 	.style("fill", devscale(99))
+								// 	.style("opacity", 0.1);
+
+								let threshold110 = mapOne.insert("g", "path.region")
 									.attr("id", "threshold110")
-									.attr("x", devLinearScale(110) - (devLinearScale(110) - devLinearScale(100)))
+									.attr("transform", `translate(${devLinearScale(110)}, 0)`);
+
+								threshold110.append("rect")
+									.attr("x", -(devLinearScale(110) - devLinearScale(100)))
 									.attr("y", legendy + legendHeight + marginTitleLegend)
 									.attr("width", devLinearScale(110) - devLinearScale(100))
 									.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 -marginTitleLegend)
 									.style("fill", devscale(109))
-									.style("opacity", 0.1);
-								mapOne.insert("rect", "path.region")
+									.style("opacity", 0.2);
+
+								threshold110.append('line')
+									.attr("x1", 0)
+									.attr("x2", 0)
+									.attr("y1", legendy + marginTitleLegend)
+									.attr("y2", height - 32)
+									.style("stroke-width", 1)
+									.style("stroke", d3.color(devscale(109)).darker(1).toString());
+
+								threshold110.append('text')
+									.attr("x", 0)
+									.attr("y", height - 20)
+									.text(110)
+									.style("text-anchor", "start")
+									.style("fill", d3.color(devscale(109)).darker(2).toString())//d3.color(devscale(89)))
+									.attr("class", "label-outside tk-atlas");
+
+								let threshold125 = mapOne.insert("g", "path.region")
 									.attr("id", "threshold125")
-									.attr("x", devLinearScale(125) - (devLinearScale(125) - devLinearScale(110)))
+									.attr("transform", `translate(${devLinearScale(125)}, 0)`);
+
+								threshold125.append("rect")
+									.attr("x", -(devLinearScale(125) - devLinearScale(110)))
 									.attr("y", legendy + legendHeight + marginTitleLegend)
 									.attr("width", devLinearScale(125) - devLinearScale(110))
 									.attr("height", height - margin.top - margin.bottom + legendy + countryScale.step()/2 -marginTitleLegend)
 									.style("fill", devscale(124))
 									.style("opacity", 0.1);
+
+								threshold125.append('line')
+									.attr("x1", 0)
+									.attr("x2", 0)
+									.attr("y1", legendy + marginTitleLegend)
+									.attr("y2", height - 32)
+									.style("stroke-width", 1)
+									.style("stroke", devscale(124));
+
+								threshold125.append('text')
+									.attr("x", 0)
+									.attr("y", height - 20)
+									.text(125)
+									.style("text-anchor", "start")
+									.style("fill", d3.color(devscale(124)).darker(2).toString())//d3.color(devscale(89)))
+									.attr("class", "label-outside tk-atlas");
+
 								mapOne.insert("rect", "path.region")
 									.attr("id", "threshold600")
 									.attr("x", devLinearScale(600) - (devLinearScale(600) - devLinearScale(125)))
@@ -451,6 +502,7 @@ function init() {
 									.style("opacity", 0.2);
 							}
 							if(step.index == 7 && step.direction == "up"){
+								d3.select("#average-two").remove();
 								d3.select("#threshold75").remove();
 								d3.select("#threshold90").remove();
 								d3.select("#threshold100").remove();
@@ -816,7 +868,7 @@ function init() {
 							regioncodes.forEach(function(region){
 								d3.select(`.region#` + region)
 									.style("opacity", 1)
-									.style("stroke", "#000000")
+									// .style("stroke", "#000000")
 									.raise();
 								countries.raise();
 								eucaps.raise();
